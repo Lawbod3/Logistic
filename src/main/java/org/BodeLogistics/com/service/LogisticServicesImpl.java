@@ -75,6 +75,7 @@ public class LogisticServicesImpl implements LogisticServices{
     @Override
     public UserBookARideResponse userBookARide(UserBookARideRequest userBookARideRequest) {
         return null;
+
     }
 
     @Override
