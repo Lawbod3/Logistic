@@ -12,10 +12,12 @@ public class UserBookARideRequest {
     private String userId;
     @NotBlank
     private String destinationAddress;
-    private LocalDate date;
+    @NotBlank
+    private String pickupAddress;
+    private String forSomeonePhoneNumber;
+    private String forSomeoneName;
     private String price;
-    private String driverId;
-    private  String comment;
+
 
 
 }
