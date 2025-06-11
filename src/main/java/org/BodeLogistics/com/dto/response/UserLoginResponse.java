@@ -1,7 +1,20 @@
 package org.BodeLogistics.com.dto.response;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
+import org.BodeLogistics.com.data.models.Activity;
+
+import java.util.List;
 
 @Data
 public class UserLoginResponse {
+    private String id;
+    private String phoneNumber;
+    private String email;
+    private String firstName;
+    private String lastName;
+    private String homeAddress;
+    private boolean isADriver;
+    private List<Activity> activities;
 }

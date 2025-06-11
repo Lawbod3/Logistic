@@ -5,6 +5,7 @@ import org.BodeLogistics.com.data.repositories.ActivityRepository;
 import org.BodeLogistics.com.data.repositories.UserRepository;
 import org.BodeLogistics.com.dto.request.*;
 import org.BodeLogistics.com.dto.response.*;
+import org.BodeLogistics.com.exceptions.UserDoesNotExist;
 import org.BodeLogistics.com.exceptions.UserExistException;
 import org.BodeLogistics.com.utils.Map;
 import org.jasypt.encryption.StringEncryptor;
@@ -38,8 +39,13 @@ public class LogisticServicesImpl implements LogisticServices{
     }
 
     @Override
-    public UserLoginResponse loginUser(UserLoginRequest userLoginRequest) {
-        return null;
+    public UserLoginResponse loginUser(UserLoginRequest request) {
+        UserLoginResponse response = new UserLoginResponse();
+        User user = userRepository.findByPhoneNumber(request.getPhoneNumber())
+                .orElseThrow(() ->  new UserDoesNotExist("User does not Exist"));
+        response = Map.userToUserLoginResponse(user);
+        response.setActivities(activityRepository.findAllByUserId(user.getId()).get());
+        return response;
     }
 
     @Override

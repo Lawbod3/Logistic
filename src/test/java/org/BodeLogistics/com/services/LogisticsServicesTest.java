@@ -1,8 +1,11 @@
 package org.BodeLogistics.com.services;
 
 import org.BodeLogistics.com.data.repositories.UserRepository;
+import org.BodeLogistics.com.dto.request.UserLoginRequest;
 import org.BodeLogistics.com.dto.request.UserRegistrationRequest;
+import org.BodeLogistics.com.dto.response.UserLoginResponse;
 import org.BodeLogistics.com.dto.response.UserRegistrationResponse;
+import org.BodeLogistics.com.exceptions.UserDoesNotExist;
 import org.BodeLogistics.com.exceptions.UserExistException;
 import org.BodeLogistics.com.service.LogisticServices;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +23,8 @@ public class LogisticsServicesTest {
     UserRepository userRepository;
     private UserRegistrationRequest userRegistrationRequest;
     private UserRegistrationResponse userRegistrationResponse;
+    private UserLoginRequest userLoginRequest;
+    private UserLoginResponse userLoginResponse;
 
     @BeforeEach
     public void setUp() {
@@ -30,6 +35,11 @@ public class LogisticsServicesTest {
         userRegistrationRequest.setLastName("Test");
         userRegistrationRequest.setPassword("password");
         userRegistrationRequest.setPhoneNumber("123456789");
+
+        userLoginRequest = new UserLoginRequest();
+        userLoginRequest.setPhoneNumber("123456789");
+        userLoginRequest.setPassword("password");
+
 
 
     }
@@ -47,4 +57,23 @@ public class LogisticsServicesTest {
         assertEquals(userRegistrationRequest.getEmail(), userRegistrationResponse.getEmail());
         assertThrows(UserExistException.class, () -> logisticServices.registerUser(userRegistrationRequest));
     }
+    @Test
+    public void testThatLogisticsServiceCanLoginUser() {
+        userRegistrationResponse = logisticServices.registerUser(userRegistrationRequest);
+        assertTrue(userRepository.findByEmail(userRegistrationRequest.getEmail()).isPresent());
+        assertEquals(userRegistrationRequest.getEmail(), userRegistrationResponse.getEmail());
+        userLoginResponse = logisticServices.loginUser(userLoginRequest);
+        assertEquals(userLoginRequest.getPhoneNumber(), userLoginResponse.getPhoneNumber());
+
+    }
+    @Test
+    public void testThatLogisticsServiceCannotLoginUserWhenUserDoesNotExist() {
+        userRegistrationResponse = logisticServices.registerUser(userRegistrationRequest);
+        assertTrue(userRepository.findByEmail(userRegistrationRequest.getEmail()).isPresent());
+        assertEquals(userRegistrationRequest.getEmail(), userRegistrationResponse.getEmail());
+        userLoginRequest.setPhoneNumber("1111");
+        assertThrows(UserDoesNotExist.class, () -> logisticServices.loginUser(userLoginRequest));
+
+    }
 }
+
