@@ -1,9 +1,12 @@
 package org.BodeLogistics.com.service;
 
+import org.BodeLogistics.com.data.models.User;
 import org.BodeLogistics.com.data.repositories.ActivityRepository;
 import org.BodeLogistics.com.data.repositories.UserRepository;
 import org.BodeLogistics.com.dto.request.*;
 import org.BodeLogistics.com.dto.response.*;
+import org.BodeLogistics.com.exceptions.UserExistException;
+import org.BodeLogistics.com.utils.Map;
 import org.jasypt.encryption.StringEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,11 +17,23 @@ public class LogisticServicesImpl implements LogisticServices{
     UserRepository userRepository;
     @Autowired
     ActivityRepository activityRepository;
+    @Autowired
+    StringEncryptor stringEncryptor;
+
     private StringEncryptor encryptor;
 
     @Override
-    public UserRegistrationResponse registerUser(UserRegistrationRequest userRegistrationRequest) {
-        return null;
+    public UserRegistrationResponse registerUser(UserRegistrationRequest request) {
+        if(userRepository.existsByPhoneNumber(request.getPhoneNumber())) throw new UserExistException("User Already Exist");
+        User user = new User();
+        user.setADriver(false);
+        user.setEmail(request.getEmail());
+        user.setPhoneNumber(request.getPhoneNumber());
+        user.setLastName(request.getLastName());
+        user.setFirstName(request.getFirstName());
+        user.setHomeAddress(request.getHomeAddress());
+        userRepository.save(user);
+        return Map.userToUserRegistrationResponse(user);
     }
 
     @Override
