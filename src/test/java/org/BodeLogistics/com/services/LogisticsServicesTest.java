@@ -5,7 +5,7 @@ import org.BodeLogistics.com.dto.request.UserLoginRequest;
 import org.BodeLogistics.com.dto.request.UserRegistrationRequest;
 import org.BodeLogistics.com.dto.response.UserLoginResponse;
 import org.BodeLogistics.com.dto.response.UserRegistrationResponse;
-import org.BodeLogistics.com.exceptions.LogisticsSystemException;
+
 import org.BodeLogistics.com.exceptions.PasswordException;
 import org.BodeLogistics.com.exceptions.UserDoesNotExistException;
 import org.BodeLogistics.com.exceptions.UserExistException;
