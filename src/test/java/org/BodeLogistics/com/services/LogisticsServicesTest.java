@@ -5,7 +5,9 @@ import org.BodeLogistics.com.dto.request.UserLoginRequest;
 import org.BodeLogistics.com.dto.request.UserRegistrationRequest;
 import org.BodeLogistics.com.dto.response.UserLoginResponse;
 import org.BodeLogistics.com.dto.response.UserRegistrationResponse;
-import org.BodeLogistics.com.exceptions.UserDoesNotExist;
+import org.BodeLogistics.com.exceptions.LogisticsSystemException;
+import org.BodeLogistics.com.exceptions.PasswordException;
+import org.BodeLogistics.com.exceptions.UserDoesNotExistException;
 import org.BodeLogistics.com.exceptions.UserExistException;
 import org.BodeLogistics.com.service.LogisticServices;
 import org.junit.jupiter.api.BeforeEach;
@@ -72,8 +74,17 @@ public class LogisticsServicesTest {
         assertTrue(userRepository.findByEmail(userRegistrationRequest.getEmail()).isPresent());
         assertEquals(userRegistrationRequest.getEmail(), userRegistrationResponse.getEmail());
         userLoginRequest.setPhoneNumber("1111");
-        assertThrows(UserDoesNotExist.class, () -> logisticServices.loginUser(userLoginRequest));
-
+        assertThrows(UserDoesNotExistException.class, () -> logisticServices.loginUser(userLoginRequest));
     }
+    @Test
+    public void testThatLogisticsServiceCannotLoginUserWhenUserExistsButWrongPassword() {
+        userRegistrationResponse = logisticServices.registerUser(userRegistrationRequest);
+        assertTrue(userRepository.findByEmail(userRegistrationRequest.getEmail()).isPresent());
+        assertEquals(userRegistrationRequest.getEmail(), userRegistrationResponse.getEmail());
+        userLoginRequest.setPassword("1111");
+        assertThrows(PasswordException.class, () -> logisticServices.loginUser(userLoginRequest));
+    }
+
+
 }
 
