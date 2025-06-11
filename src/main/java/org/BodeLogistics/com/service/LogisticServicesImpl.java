@@ -64,6 +64,7 @@ public class LogisticServicesImpl implements LogisticServices{
 
     @Override
     public BecomeADriverResponse becomeDriver(BecomeADriverRequest becomeADriverRequest) {
+
         return null;
     }
 
