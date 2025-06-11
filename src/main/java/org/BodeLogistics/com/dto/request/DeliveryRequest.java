@@ -8,6 +8,8 @@ public class DeliveryRequest {
     @NotBlank
     private String receiverPhoneNumber;
     @NotBlank
+    private String receiverName;
+    @NotBlank
     private String senderPhoneNumber;
     @NotBlank
     private String pickUpAddress;
@@ -15,7 +17,6 @@ public class DeliveryRequest {
     private String deliveryAddress;
     @NotBlank
     private String userId;
-    @NotBlank
-    private String driverId;
+
 
 }
