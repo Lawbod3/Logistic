@@ -16,7 +16,7 @@ public class User {
     private String firstName;
     private String lastName;
     private String homeAddress;
-    private boolean becomeADriver;
+    private boolean isADriver;
 
 
 
