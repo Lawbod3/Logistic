@@ -1,8 +1,10 @@
 package org.BodeLogistics.com.services;
 
 import org.BodeLogistics.com.data.repositories.UserRepository;
+import org.BodeLogistics.com.dto.request.BecomeADriverRequest;
 import org.BodeLogistics.com.dto.request.UserLoginRequest;
 import org.BodeLogistics.com.dto.request.UserRegistrationRequest;
+import org.BodeLogistics.com.dto.response.BecomeADriverResponse;
 import org.BodeLogistics.com.dto.response.UserLoginResponse;
 import org.BodeLogistics.com.dto.response.UserRegistrationResponse;
 
@@ -27,6 +29,8 @@ public class LogisticsServicesTest {
     private UserRegistrationResponse userRegistrationResponse;
     private UserLoginRequest userLoginRequest;
     private UserLoginResponse userLoginResponse;
+    private BecomeADriverRequest becomeADriverRequest;
+    private BecomeADriverResponse becomeADriverResponse;
 
     @BeforeEach
     public void setUp() {
@@ -41,6 +45,12 @@ public class LogisticsServicesTest {
         userLoginRequest = new UserLoginRequest();
         userLoginRequest.setPhoneNumber("123456789");
         userLoginRequest.setPassword("password");
+
+        becomeADriverRequest = new BecomeADriverRequest();
+        becomeADriverRequest.setDriversLicenseNumber("123456789012");
+        becomeADriverRequest.setVehicleId("ABCD1234");
+
+
 
 
 
@@ -83,6 +93,20 @@ public class LogisticsServicesTest {
         assertEquals(userRegistrationRequest.getEmail(), userRegistrationResponse.getEmail());
         userLoginRequest.setPassword("1111");
         assertThrows(PasswordException.class, () -> logisticServices.loginUser(userLoginRequest));
+    }
+
+    @Test
+    public void testThatLogisticsServiceCanRegisterUserAsDriver() {
+        userRegistrationResponse = logisticServices.registerUser(userRegistrationRequest);
+        assertTrue(userRepository.findByEmail(userRegistrationRequest.getEmail()).isPresent());
+        assertEquals(userRegistrationRequest.getEmail(), userRegistrationResponse.getEmail());
+        userLoginResponse = logisticServices.loginUser(userLoginRequest);
+        assertEquals(userLoginRequest.getPhoneNumber(), userLoginResponse.getPhoneNumber());
+        becomeADriverRequest.setUserId(userLoginResponse.getId());
+        becomeADriverResponse = logisticServices.becomeDriver(becomeADriverRequest);
+        assertNotNull(becomeADriverResponse.getMessage());
+
+
     }
 
 
