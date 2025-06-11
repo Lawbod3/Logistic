@@ -1,9 +1,14 @@
 package org.BodeLogistics.com.controllers;
 
 import jakarta.validation.Valid;
+import org.BodeLogistics.com.dto.request.UserLoginRequest;
 import org.BodeLogistics.com.dto.request.UserRegistrationRequest;
 import org.BodeLogistics.com.dto.response.ApiResponse;
+import org.BodeLogistics.com.dto.response.UserLoginResponse;
 import org.BodeLogistics.com.dto.response.UserRegistrationResponse;
+import org.BodeLogistics.com.exceptions.LogisticsSystemException;
+import org.BodeLogistics.com.exceptions.PasswordException;
+import org.BodeLogistics.com.exceptions.UserDoesNotExistException;
 import org.BodeLogistics.com.exceptions.UserExistException;
 import org.BodeLogistics.com.service.LogisticServices;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+
+import java.text.ParseException;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -31,6 +38,17 @@ public class UserController {
             return new ResponseEntity<>(new ApiResponse(true, response), HttpStatus.CREATED);
         }
         catch(UserExistException e){
+            return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@Valid @RequestBody UserLoginRequest request) {
+        try {
+            UserLoginResponse response = logisticServices.loginUser(request);
+            return new ResponseEntity<>(new ApiResponse(true, response), HttpStatus.OK);
+
+        }
+        catch(UserDoesNotExistException | PasswordException | LogisticsSystemException e){
             return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
