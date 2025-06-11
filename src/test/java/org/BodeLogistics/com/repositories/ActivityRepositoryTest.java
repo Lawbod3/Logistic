@@ -15,16 +15,20 @@ public class ActivityRepositoryTest {
     @Autowired
     ActivityRepository activityRepository;
     private User user;
+    private User driver;
     private Activity activity;
 
     @BeforeEach
     public void setUp() {
+
         user = new User();
-        user.setADriver(true);
+        driver = new User();
+        driver.setADriver(true);
 
         activityRepository.deleteAll();
         activity = new Activity();
-        activity.setDriver(user);
+        activity.setDriverId(driver.getId());
+
     }
     @Test
     public void testActivityRepositoryIsEmpty() {
@@ -43,7 +47,7 @@ public class ActivityRepositoryTest {
     @Test
     public void testActivityRepositoryCanFindByDriver() {
         activityRepository.save(activity);
-        assertTrue(activityRepository.findByDriverId(activity.getDriver().getId()).isPresent());
+        assertTrue(activityRepository.findByDriverId(driver.getId()).isPresent());
     }
 
 
