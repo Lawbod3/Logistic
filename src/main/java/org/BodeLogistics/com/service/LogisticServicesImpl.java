@@ -1,14 +1,12 @@
 package org.BodeLogistics.com.service;
 
+import org.BodeLogistics.com.data.models.DriverRegistrationStatus;
 import org.BodeLogistics.com.data.models.User;
 import org.BodeLogistics.com.data.repositories.ActivityRepository;
 import org.BodeLogistics.com.data.repositories.UserRepository;
 import org.BodeLogistics.com.dto.request.*;
 import org.BodeLogistics.com.dto.response.*;
-import org.BodeLogistics.com.exceptions.LogisticsSystemException;
-import org.BodeLogistics.com.exceptions.PasswordException;
-import org.BodeLogistics.com.exceptions.UserDoesNotExistException;
-import org.BodeLogistics.com.exceptions.UserExistException;
+import org.BodeLogistics.com.exceptions.*;
 import org.BodeLogistics.com.utils.Map;
 import org.jasypt.encryption.StringEncryptor;
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
@@ -64,8 +62,22 @@ public class LogisticServicesImpl implements LogisticServices{
 
     @Override
     public BecomeADriverResponse becomeDriver(BecomeADriverRequest becomeADriverRequest) {
+        User user = userRepository.findById(becomeADriverRequest.getUserId())
+                .orElseThrow(() -> new UserExistException("User Already Exist"));
 
-        return null;
+        BecomeADriverResponse response = new BecomeADriverResponse();
+        if(verifyBecomeADriverRequest(becomeADriverRequest)){
+            response.setStatus(DriverRegistrationStatus.Success);
+            response.setMessage("Registered successfully");
+            user.setADriver(true);
+            userRepository.save(user);
+        }
+        else{
+            response.setStatus(DriverRegistrationStatus.Failed);
+            response.setMessage("Your DriversLicense need to 12 digit Number or VehicleId need to be 8 characters");
+        }
+
+        return response;
     }
 
     @Override
@@ -82,5 +94,10 @@ public class LogisticServicesImpl implements LogisticServices{
     @Override
     public ActivityStatusResponse activityStatus(ActivityStatusRequest activityStatusRequest) {
         return null;
+    }
+    private boolean verifyBecomeADriverRequest(BecomeADriverRequest becomeADriverRequest) {
+        if(becomeADriverRequest.getDriversLicenseNumber().length() != 12) return false;
+        if(becomeADriverRequest.getVehicleId().length() != 8) return false;
+        return true;
     }
 }
