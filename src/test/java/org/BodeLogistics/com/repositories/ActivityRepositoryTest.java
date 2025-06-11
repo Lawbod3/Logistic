@@ -40,6 +40,11 @@ public class ActivityRepositoryTest {
         activityRepository.save(activity);
         assertTrue(activityRepository.findById(activity.getId()).isPresent());
     }
+    @Test
+    public void testActivityRepositoryCanFindByDriver() {
+        activityRepository.save(activity);
+        assertTrue(activityRepository.findByDriverId(activity.getDriver().getId()).isPresent());
+    }
 
 
 }
