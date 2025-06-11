@@ -3,6 +3,9 @@ package org.BodeLogistics.com.dto.response;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
+import org.BodeLogistics.com.data.models.Activity;
+
+import java.util.List;
 
 @Data
 public class UserRegistrationResponse {
@@ -13,4 +16,5 @@ public class UserRegistrationResponse {
     private String lastName;
     private String homeAddress;
     private boolean isADriver;
+    private List<Activity> activities;
 }
