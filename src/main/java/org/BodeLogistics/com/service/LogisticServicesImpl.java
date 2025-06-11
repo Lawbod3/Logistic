@@ -5,10 +5,15 @@ import org.BodeLogistics.com.data.repositories.ActivityRepository;
 import org.BodeLogistics.com.data.repositories.UserRepository;
 import org.BodeLogistics.com.dto.request.*;
 import org.BodeLogistics.com.dto.response.*;
-import org.BodeLogistics.com.exceptions.UserDoesNotExist;
+import org.BodeLogistics.com.exceptions.LogisticsSystemException;
+import org.BodeLogistics.com.exceptions.PasswordException;
+import org.BodeLogistics.com.exceptions.UserDoesNotExistException;
 import org.BodeLogistics.com.exceptions.UserExistException;
 import org.BodeLogistics.com.utils.Map;
 import org.jasypt.encryption.StringEncryptor;
+import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +25,7 @@ public class LogisticServicesImpl implements LogisticServices{
     ActivityRepository activityRepository;
     @Autowired
     StringEncryptor stringEncryptor;
-
+    private static final Logger logger = LoggerFactory.getLogger(LogisticServicesImpl.class);
     private StringEncryptor encryptor;
 
     @Override
@@ -42,10 +47,20 @@ public class LogisticServicesImpl implements LogisticServices{
     public UserLoginResponse loginUser(UserLoginRequest request) {
         UserLoginResponse response = new UserLoginResponse();
         User user = userRepository.findByPhoneNumber(request.getPhoneNumber())
-                .orElseThrow(() ->  new UserDoesNotExist("User does not Exist"));
+                .orElseThrow(() ->  new UserDoesNotExistException("User does not Exist"));
+        try{
+        String decryptedPassword = stringEncryptor.decrypt(user.getPassword());
+        if(!decryptedPassword.equals(request.getPassword())) throw new PasswordException("Invalid Password");
+        } catch (EncryptionOperationNotPossibleException e ) {
+            logger.error("Failed to decrypt password for user with phone number: {}",
+                    request.getPhoneNumber(), e);
+            throw new LogisticsSystemException("System error");
+        }
+
         response = Map.userToUserLoginResponse(user);
         response.setActivities(activityRepository.findAllByUserId(user.getId()).get());
         return response;
+
     }
 
     @Override

@@ -19,12 +19,9 @@ public class User {
     private String firstName;
     private String lastName;
     private String homeAddress;
-    @Getter(AccessLevel.NONE)
     private String password;
     private boolean isADriver;
 
-public boolean isValidPassword(String password) {
-    return this.password.equals(password);
-}
+
 
 }
