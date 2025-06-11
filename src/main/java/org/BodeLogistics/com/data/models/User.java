@@ -4,7 +4,8 @@ package org.BodeLogistics.com.data.models;
 
 import lombok.AccessLevel;
 import lombok.Data;
-import lombok.Setter;
+import lombok.Getter;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -18,7 +19,7 @@ public class User {
     private String firstName;
     private String lastName;
     private String homeAddress;
-    @Setter(AccessLevel.NONE)
+    @Getter(AccessLevel.NONE)
     private String password;
     private boolean isADriver;
 

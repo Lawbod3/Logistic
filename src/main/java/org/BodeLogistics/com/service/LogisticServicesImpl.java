@@ -32,6 +32,7 @@ public class LogisticServicesImpl implements LogisticServices{
         user.setLastName(request.getLastName());
         user.setFirstName(request.getFirstName());
         user.setHomeAddress(request.getHomeAddress());
+        user.setPassword(stringEncryptor.encrypt(request.getPassword()));
         userRepository.save(user);
         return Map.userToUserRegistrationResponse(user);
     }
