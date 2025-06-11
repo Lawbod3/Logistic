@@ -56,7 +56,6 @@ public class LogisticServicesImpl implements LogisticServices{
                     request.getPhoneNumber(), e);
             throw new LogisticsSystemException("System error");
         }
-
         response = Map.userToUserLoginResponse(user);
         response.setActivities(activityRepository.findAllByUserId(user.getId()).get());
         return response;
