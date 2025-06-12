@@ -1,10 +1,7 @@
 package org.BodeLogistics.com.controllers;
 
 import jakarta.validation.Valid;
-import org.BodeLogistics.com.dto.request.DispatchRiderRegistrationRequest;
-import org.BodeLogistics.com.dto.request.DriverRegistrationRequest;
-import org.BodeLogistics.com.dto.request.UserLoginRequest;
-import org.BodeLogistics.com.dto.request.UserRegistrationRequest;
+import org.BodeLogistics.com.dto.request.*;
 import org.BodeLogistics.com.dto.response.*;
 import org.BodeLogistics.com.exceptions.*;
 import org.BodeLogistics.com.service.LogisticServices;
@@ -71,6 +68,19 @@ public class UserController {
             return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @PostMapping("/login/dispatch-request")
+    public ResponseEntity<?> dispatchRequest(@Valid @RequestBody DeliveryRequest request){
+        try{
+            DeliveryResponse response = logisticServices.dispatchRequest(request);
+            return new ResponseEntity<>(new ApiResponse(true, response), HttpStatus.CREATED);
+        }
+        catch(DispatcherNotAvailableException e){
+            return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
 
 
 
