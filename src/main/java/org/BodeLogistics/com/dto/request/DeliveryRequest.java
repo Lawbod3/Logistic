@@ -18,7 +18,7 @@ public class DeliveryRequest {
     @NotBlank
     private String userId;
     @NotBlank
-    @Pattern(regexp = "^[0-9](\\\\.[0-9]{1,2})?$")
+    @Pattern(regexp = "^\\d+(\\.\\d{1,2})?$", message = "Price must be a number with up to 2 decimal places")
     private String price;
 
 
