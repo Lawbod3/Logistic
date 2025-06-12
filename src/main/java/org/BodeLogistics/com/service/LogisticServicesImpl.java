@@ -1,8 +1,11 @@
 package org.BodeLogistics.com.service;
 
+import org.BodeLogistics.com.data.models.Driver;
 import org.BodeLogistics.com.data.models.DriverRegistrationStatus;
 import org.BodeLogistics.com.data.models.User;
+import org.BodeLogistics.com.data.models.UserType;
 import org.BodeLogistics.com.data.repositories.ActivityRepository;
+import org.BodeLogistics.com.data.repositories.DriverRepository;
 import org.BodeLogistics.com.data.repositories.UserRepository;
 import org.BodeLogistics.com.dto.request.*;
 import org.BodeLogistics.com.dto.response.*;
@@ -19,6 +22,8 @@ import org.springframework.stereotype.Service;
 public class LogisticServicesImpl implements LogisticServices{
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    DriverRepository driverRepository;
     @Autowired
     ActivityRepository activityRepository;
     @Autowired
@@ -64,16 +69,18 @@ public class LogisticServicesImpl implements LogisticServices{
     public BecomeADriverResponse becomeDriver(BecomeADriverRequest becomeADriverRequest) {
         User user = userRepository.findById(becomeADriverRequest.getUserId())
                 .orElseThrow(() -> new UserExistException("User Already Exist"));
-
+        if(user.getUserType().equals(UserType.DRIVER)) throw new DriverExistException("Driver Already Exist");
         BecomeADriverResponse response = new BecomeADriverResponse();
         if(verifyBecomeADriverRequest(becomeADriverRequest)){
+            Driver driver = Map.userToDriver(user);
             response.setStatus(DriverRegistrationStatus.Success);
             response.setMessage("Registered successfully");
             userRepository.save(user);
+            driverRepository.save(driver);
         }
         else{
             response.setStatus(DriverRegistrationStatus.Failed);
-            response.setMessage("Your DriversLicense need to 12 digit Number or VehicleId need to be 8 characters");
+            response.setMessage("Your DriversLicense need to 12 digit Number or VehicleId need to be in this format(AbCd1234)");
         }
 
         return response;
@@ -95,8 +102,8 @@ public class LogisticServicesImpl implements LogisticServices{
         return null;
     }
     private boolean verifyBecomeADriverRequest(BecomeADriverRequest becomeADriverRequest) {
-        if(becomeADriverRequest.getDriversLicenseNumber().length() != 12) return false;
-        if(becomeADriverRequest.getVehicleId().length() != 8) return false;
+        if(!becomeADriverRequest.getDriversLicenseNumber().matches("^\\d{12}$")) return false;
+        if(!becomeADriverRequest.getVehicleId().matches("^[A-Za-z]{4}\\d{4}$")) return false;
         return true;
     }
 }

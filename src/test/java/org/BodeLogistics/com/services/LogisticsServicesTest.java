@@ -1,5 +1,7 @@
 package org.BodeLogistics.com.services;
 
+
+import org.BodeLogistics.com.data.repositories.DriverRepository;
 import org.BodeLogistics.com.data.repositories.UserRepository;
 import org.BodeLogistics.com.dto.request.BecomeADriverRequest;
 import org.BodeLogistics.com.dto.request.UserLoginRequest;
@@ -8,6 +10,7 @@ import org.BodeLogistics.com.dto.response.BecomeADriverResponse;
 import org.BodeLogistics.com.dto.response.UserLoginResponse;
 import org.BodeLogistics.com.dto.response.UserRegistrationResponse;
 
+import org.BodeLogistics.com.exceptions.DriverExistException;
 import org.BodeLogistics.com.exceptions.PasswordException;
 import org.BodeLogistics.com.exceptions.UserDoesNotExistException;
 import org.BodeLogistics.com.exceptions.UserExistException;
@@ -25,6 +28,9 @@ public class LogisticsServicesTest {
     LogisticServices logisticServices;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    DriverRepository driverRepository;
+
     private UserRegistrationRequest userRegistrationRequest;
     private UserRegistrationResponse userRegistrationResponse;
     private UserLoginRequest userLoginRequest;
@@ -35,6 +41,8 @@ public class LogisticsServicesTest {
     @BeforeEach
     public void setUp() {
         userRepository.deleteAll();
+        driverRepository.deleteAll();
+
         userRegistrationRequest = new UserRegistrationRequest();
         userRegistrationRequest.setEmail("test@test.com");
         userRegistrationRequest.setFirstName("Test");
@@ -49,9 +57,6 @@ public class LogisticsServicesTest {
         becomeADriverRequest = new BecomeADriverRequest();
         becomeADriverRequest.setDriversLicenseNumber("123456789012");
         becomeADriverRequest.setVehicleId("ABCD1234");
-
-
-
 
 
     }
@@ -106,8 +111,36 @@ public class LogisticsServicesTest {
         becomeADriverResponse = logisticServices.becomeDriver(becomeADriverRequest);
         assertNotNull(becomeADriverResponse.getMessage());
 
+    }
+    @Test
+    public void testThatLogisticsServiceCannotRegisterUserAsDriverWhenUserIsAlreadyADriver() {
+        userRegistrationResponse = logisticServices.registerUser(userRegistrationRequest);
+        assertTrue(userRepository.findByEmail(userRegistrationRequest.getEmail()).isPresent());
+        assertEquals(userRegistrationRequest.getEmail(), userRegistrationResponse.getEmail());
+
+        userLoginResponse = logisticServices.loginUser(userLoginRequest);
+        assertEquals(userLoginRequest.getPhoneNumber(), userLoginResponse.getPhoneNumber());
+
+        becomeADriverRequest.setUserId(userLoginResponse.getId());
+        becomeADriverResponse = logisticServices.becomeDriver(becomeADriverRequest);
+        assertNotNull(becomeADriverResponse.getMessage());
+
+        assertThrows(DriverExistException.class, () -> logisticServices.becomeDriver(becomeADriverRequest));
+    }
+    @Test
+    public void testThatLogisticsServiceCannotRegisterUserAsDriverWhenRequestDetailsIsWrong() {
+        userRegistrationResponse = logisticServices.registerUser(userRegistrationRequest);
+        assertTrue(userRepository.findByEmail(userRegistrationRequest.getEmail()).isPresent());
+        assertEquals(userRegistrationRequest.getEmail(), userRegistrationResponse.getEmail());
+        userLoginResponse = logisticServices.loginUser(userLoginRequest);
+        assertEquals(userLoginRequest.getPhoneNumber(), userLoginResponse.getPhoneNumber());
+        becomeADriverRequest.setUserId(userLoginResponse.getId());
+        becomeADriverRequest.setDriversLicenseNumber("123456789");
+        becomeADriverResponse = logisticServices.becomeDriver(becomeADriverRequest);
+        assertEquals("Your DriversLicense need to 12 digit Number or VehicleId need to be in this format(AbCd1234)",becomeADriverResponse.getMessage());
 
     }
+
 
 
 }
