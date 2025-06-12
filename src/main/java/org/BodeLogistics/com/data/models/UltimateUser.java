@@ -7,6 +7,7 @@ import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class Driver extends User {
-    private List<Activity> rideActivities;
+public class UltimateUser extends User {
+    private List<Activity> dispatchedActivities;
+    private List<Activity> DriverActivities;
 }
