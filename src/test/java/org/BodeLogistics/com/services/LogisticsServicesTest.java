@@ -148,9 +148,7 @@ public class LogisticsServicesTest {
         assertEquals(userLoginRequest.getPhoneNumber(), userLoginResponse.getPhoneNumber());
         becomeADriverRequest.setUserId(userLoginResponse.getId());
         becomeADriverRequest.setDriversLicenseNumber("123456789");
-        becomeADriverResponse = logisticServices.registerDriver(becomeADriverRequest);
-        assertEquals("Your DriversLicense need to 12 digit Number or VehicleId need to be in this format(AbCd1234)",becomeADriverResponse.getMessage());
-
+        assertThrows(VehicleAuthenticationException.class, () -> logisticServices.registerDriver(becomeADriverRequest) );
     }
     @Test
     public void testThatLogisticsServiceCanRegisterUserAsDispatchRider() {
@@ -188,8 +186,7 @@ public class LogisticsServicesTest {
         assertEquals(userLoginRequest.getPhoneNumber(), userLoginResponse.getPhoneNumber());
         dispatchRiderRegistrationRequest.setUserId(userLoginResponse.getId());
         dispatchRiderRegistrationRequest.setRidersLicenseNumber("123456789");
-        dispatchRiderRegistrationResponse = logisticServices.registerDispatchRider(dispatchRiderRegistrationRequest);
-        assertEquals("Your DriversLicense need to 12 digit Number or VehicleId need to be in this format(AbCd1234)",dispatchRiderRegistrationResponse.getMessage());
+        assertThrows(MotorcycleAuthenticationException.class, () -> logisticServices.registerDispatchRider(dispatchRiderRegistrationRequest));
     }
 
 
