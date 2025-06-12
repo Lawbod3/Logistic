@@ -1,15 +1,14 @@
 package org.BodeLogistics.com.controllers;
 
 import jakarta.validation.Valid;
+import org.BodeLogistics.com.dto.request.DriverRegistrationRequest;
 import org.BodeLogistics.com.dto.request.UserLoginRequest;
 import org.BodeLogistics.com.dto.request.UserRegistrationRequest;
 import org.BodeLogistics.com.dto.response.ApiResponse;
+import org.BodeLogistics.com.dto.response.DriverRegistrationResponse;
 import org.BodeLogistics.com.dto.response.UserLoginResponse;
 import org.BodeLogistics.com.dto.response.UserRegistrationResponse;
-import org.BodeLogistics.com.exceptions.LogisticsSystemException;
-import org.BodeLogistics.com.exceptions.PasswordException;
-import org.BodeLogistics.com.exceptions.UserDoesNotExistException;
-import org.BodeLogistics.com.exceptions.UserExistException;
+import org.BodeLogistics.com.exceptions.*;
 import org.BodeLogistics.com.service.LogisticServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -49,6 +48,17 @@ public class UserController {
 
         }
         catch(UserDoesNotExistException | PasswordException | LogisticsSystemException e){
+            return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/login/driver-registration")
+    public ResponseEntity<?> registerDriver(@Valid @RequestBody DriverRegistrationRequest request ) {
+        try {
+            DriverRegistrationResponse response = logisticServices.registerDriver(request);
+            return new ResponseEntity<>(new ApiResponse(true, response), HttpStatus.CREATED);
+        }
+        catch(UserExistException | DriverExistException | VehicleAuthenticationException e){
             return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }

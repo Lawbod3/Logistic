@@ -3,6 +3,7 @@ package org.BodeLogistics.com.utils;
 import org.BodeLogistics.com.data.models.Driver;
 import org.BodeLogistics.com.data.models.User;
 import org.BodeLogistics.com.data.models.UserType;
+import org.BodeLogistics.com.dto.request.DriverRegistrationRequest;
 import org.BodeLogistics.com.dto.response.UserLoginResponse;
 import org.BodeLogistics.com.dto.response.UserRegistrationResponse;
 
@@ -12,7 +13,7 @@ public class Map {
         response.setEmail(user.getEmail());
         response.setFirstName(user.getFirstName());
         response.setLastName(user.getLastName());
-
+        response.setPhoneNumber(user.getPhoneNumber());
         response.setHomeAddress(user.getHomeAddress());
         response.setId(user.getId());
         return response;
@@ -31,7 +32,7 @@ public class Map {
     }
     public static Driver userToDriver(User user) {
         Driver driver = new Driver();
-        driver.setId(user.getId());
+        driver.setUserId(user.getId());
         driver.setFirstName(user.getFirstName());
         driver.setLastName(user.getLastName());
         driver.setHomeAddress(user.getHomeAddress());
@@ -41,5 +42,11 @@ public class Map {
         driver.setUserType(UserType.DRIVER);
         user.setUserType(UserType.DRIVER);
         return driver;
+    }
+    public static void driverRegistrationRequestToDriver(DriverRegistrationRequest request, Driver driver) {
+        driver.setDriversLicenseNumber(request.getDriversLicenseNumber());
+        driver.setVehicleDescription(request.getVehicleDescription());
+        driver.setVehicleId(request.getVehicleId().toLowerCase());
+
     }
 }

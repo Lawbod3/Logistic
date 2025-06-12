@@ -4,11 +4,13 @@ import jakarta.validation.constraints.*;
 import lombok.Data;
 
 @Data
-public class BecomeADriverRequest {
+public class DriverRegistrationRequest {
     @NotBlank
     private String driversLicenseNumber;
     @NotBlank
     private String userId;
     @NotBlank
     private String vehicleId;
+    @NotBlank
+    private String vehicleDescription;
 }

@@ -1,8 +1,8 @@
 package org.BodeLogistics.com.dto.response;
 
-import lombok.AccessLevel;
+
 import lombok.Data;
-import lombok.Setter;
+
 import org.BodeLogistics.com.data.models.Activity;
 
 import java.util.List;
