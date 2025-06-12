@@ -30,7 +30,7 @@ public class LogisticServicesImpl implements LogisticServices{
     public UserRegistrationResponse registerUser(UserRegistrationRequest request) {
         if(userRepository.existsByPhoneNumber(request.getPhoneNumber())) throw new UserExistException("User Already Exist");
         User user = new User();
-        user.setADriver(false);
+
         user.setEmail(request.getEmail());
         user.setPhoneNumber(request.getPhoneNumber());
         user.setLastName(request.getLastName());
@@ -69,7 +69,6 @@ public class LogisticServicesImpl implements LogisticServices{
         if(verifyBecomeADriverRequest(becomeADriverRequest)){
             response.setStatus(DriverRegistrationStatus.Success);
             response.setMessage("Registered successfully");
-            user.setADriver(true);
             userRepository.save(user);
         }
         else{
