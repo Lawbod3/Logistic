@@ -23,7 +23,7 @@ public class ActivityRepositoryTest {
 
         user = new User();
         driver = new User();
-        driver.setADriver(true);
+
 
         activityRepository.deleteAll();
         activity = new Activity();

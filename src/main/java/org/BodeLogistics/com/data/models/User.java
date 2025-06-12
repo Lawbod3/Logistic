@@ -20,7 +20,7 @@ public class User {
     private String lastName;
     private String homeAddress;
     private String password;
-    private boolean isADriver;
+
 
 
 

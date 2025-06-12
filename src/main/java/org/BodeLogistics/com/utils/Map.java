@@ -10,7 +10,7 @@ public class Map {
         response.setEmail(user.getEmail());
         response.setFirstName(user.getFirstName());
         response.setLastName(user.getLastName());
-        response.setADriver(user.isADriver());
+
         response.setHomeAddress(user.getHomeAddress());
         response.setId(user.getId());
         return response;
@@ -21,7 +21,6 @@ public class Map {
         response.setEmail(user.getEmail());
         response.setFirstName(user.getFirstName());
         response.setLastName(user.getLastName());
-        response.setADriver(user.isADriver());
         response.setHomeAddress(user.getHomeAddress());
         response.setId(user.getId());
         response.setPhoneNumber(user.getPhoneNumber());
