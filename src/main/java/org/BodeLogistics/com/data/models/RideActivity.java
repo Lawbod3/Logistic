@@ -9,11 +9,9 @@ import java.time.LocalDate;
 
 @Data
 @Document("Activity")
-public class Activity {
+public class RideActivity {
     @Id
     private String id;
-    private String forSomeoneName;
-    private String forSomeonePhoneNumber;
     private String pickUpAddress;
     private String destinationAddress;
     private LocalDate date;
@@ -22,9 +20,9 @@ public class Activity {
     private String userId;
     private String userComment;
     private String driverComment;
-    private ActivityType activityType;
-    private boolean successful;
-    private boolean cancelled;
+    private ActivityType activityType = ActivityType.RIDE;
+    private ActivityStatus activityStatus = ActivityStatus.InProgress;
+
 
 
 

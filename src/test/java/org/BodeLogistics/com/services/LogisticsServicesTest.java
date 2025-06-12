@@ -5,14 +5,8 @@ package org.BodeLogistics.com.services;
 import org.BodeLogistics.com.data.repositories.DispatchRiderRepository;
 import org.BodeLogistics.com.data.repositories.DriverRepository;
 import org.BodeLogistics.com.data.repositories.UserRepository;
-import org.BodeLogistics.com.dto.request.DispatchRiderRegistrationRequest;
-import org.BodeLogistics.com.dto.request.DriverRegistrationRequest;
-import org.BodeLogistics.com.dto.request.UserLoginRequest;
-import org.BodeLogistics.com.dto.request.UserRegistrationRequest;
-import org.BodeLogistics.com.dto.response.DispatchRiderRegistrationResponse;
-import org.BodeLogistics.com.dto.response.DriverRegistrationResponse;
-import org.BodeLogistics.com.dto.response.UserLoginResponse;
-import org.BodeLogistics.com.dto.response.UserRegistrationResponse;
+import org.BodeLogistics.com.dto.request.*;
+import org.BodeLogistics.com.dto.response.*;
 
 import org.BodeLogistics.com.exceptions.*;
 import org.BodeLogistics.com.service.LogisticServices;
@@ -42,6 +36,8 @@ public class LogisticsServicesTest {
     private DriverRegistrationResponse becomeADriverResponse;
     private DispatchRiderRegistrationRequest dispatchRiderRegistrationRequest;
     private DispatchRiderRegistrationResponse dispatchRiderRegistrationResponse;
+    private DeliveryRequest deliveryRequest;
+    private DeliveryResponse deliveryResponse;
     @Autowired
     private DispatchRiderRepository dispatchRiderRepository;
 
@@ -69,6 +65,14 @@ public class LogisticsServicesTest {
         dispatchRiderRegistrationRequest = new DispatchRiderRegistrationRequest();
         dispatchRiderRegistrationRequest.setRidersLicenseNumber("123456789098");
         dispatchRiderRegistrationRequest.setMotorcycleId("AB123XYZ");
+
+        deliveryRequest = new DeliveryRequest();
+        deliveryRequest.setDeliveryAddress("312 herbert macaulay road, sabo yaba, lagos");
+        deliveryRequest.setPrice("5000");
+        deliveryRequest.setPickUpAddress("234 adeniran ogunsaya, surulere, lagos");
+        deliveryRequest.setReceiverName("Adam");
+        deliveryRequest.setReceiverPhoneNumber("123456789");
+        deliveryRequest.setSenderPhoneNumber("22222222222");
 
 
     }
@@ -175,7 +179,7 @@ public class LogisticsServicesTest {
         dispatchRiderRegistrationResponse = logisticServices.registerDispatchRider(dispatchRiderRegistrationRequest);
         assertNotNull(dispatchRiderRegistrationResponse.getMessage());
 
-        assertThrows(DriverExistException.class, () -> logisticServices.registerDispatchRider(dispatchRiderRegistrationRequest));
+        assertThrows(DispatcherExistException.class, () -> logisticServices.registerDispatchRider(dispatchRiderRegistrationRequest));
     }
     @Test
     public void testThatLogisticsServiceCannotRegisterUserAsDispatcherWhenRequestDetailsIsWrong() {
@@ -187,6 +191,21 @@ public class LogisticsServicesTest {
         dispatchRiderRegistrationRequest.setUserId(userLoginResponse.getId());
         dispatchRiderRegistrationRequest.setRidersLicenseNumber("123456789");
         assertThrows(MotorcycleAuthenticationException.class, () -> logisticServices.registerDispatchRider(dispatchRiderRegistrationRequest));
+    }
+    @Test
+    public void testThatUserCanGetDispatcherFromDeliveryRequest() {
+        userRegistrationResponse = logisticServices.registerUser(userRegistrationRequest);
+        assertTrue(userRepository.findByEmail(userRegistrationRequest.getEmail()).isPresent());
+        assertEquals(userRegistrationRequest.getEmail(), userRegistrationResponse.getEmail());
+        userLoginResponse = logisticServices.loginUser(userLoginRequest);
+        assertEquals(userLoginRequest.getPhoneNumber(), userLoginResponse.getPhoneNumber());
+        dispatchRiderRegistrationRequest.setUserId(userLoginResponse.getId());
+        dispatchRiderRegistrationResponse = logisticServices.registerDispatchRider(dispatchRiderRegistrationRequest);
+        assertNotNull(dispatchRiderRegistrationResponse.getMessage());
+
+        deliveryRequest.setUserId(userLoginResponse.getId());
+        assertThrows(DispatcherNotAvailableException.class, () -> logisticServices.dispatchRequest(deliveryRequest));
+
     }
 
 

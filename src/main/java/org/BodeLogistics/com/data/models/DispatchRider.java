@@ -1,7 +1,6 @@
 package org.BodeLogistics.com.data.models;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -23,5 +22,6 @@ public class DispatchRider {
     private String ridersLicenseNumber;
     private String motorcycleId;
     private String motorcycleDescription;
-    private List<Activity> dispatchedActivities;
+    private boolean available;
+    private List<RideActivity> dispatchedActivities;
 }

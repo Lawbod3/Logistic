@@ -17,6 +17,9 @@ public class DeliveryRequest {
     private String deliveryAddress;
     @NotBlank
     private String userId;
+    @NotBlank
+    @Pattern(regexp = "^[0-9](\\\\.[0-9]{1,2})?$")
+    private String price;
 
 
 }

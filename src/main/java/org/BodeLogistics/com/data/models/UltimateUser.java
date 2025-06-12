@@ -8,6 +8,6 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class UltimateUser extends User {
-    private List<Activity> dispatchedActivities;
-    private List<Activity> DriverActivities;
+    private List<RideActivity> dispatchedActivities;
+    private List<RideActivity> DriverActivities;
 }

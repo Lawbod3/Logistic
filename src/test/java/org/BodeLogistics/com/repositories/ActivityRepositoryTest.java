@@ -1,6 +1,6 @@
 package org.BodeLogistics.com.repositories;
 
-import org.BodeLogistics.com.data.models.Activity;
+import org.BodeLogistics.com.data.models.RideActivity;
 import org.BodeLogistics.com.data.models.User;
 import org.BodeLogistics.com.data.repositories.ActivityRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +16,7 @@ public class ActivityRepositoryTest {
     ActivityRepository activityRepository;
     private User user;
     private User driver;
-    private Activity activity;
+    private RideActivity activity;
 
     @BeforeEach
     public void setUp() {
@@ -26,7 +26,7 @@ public class ActivityRepositoryTest {
 
 
         activityRepository.deleteAll();
-        activity = new Activity();
+        activity = new RideActivity();
         activity.setDriverId(driver.getId());
 
     }
@@ -36,7 +36,7 @@ public class ActivityRepositoryTest {
     }
     @Test
     public void testActivityRepositoryIsNotEmpty() {
-        activityRepository.save(new Activity());
+        activityRepository.save(new RideActivity());
         assertFalse(activityRepository.findAll().isEmpty());
     }
     @Test
