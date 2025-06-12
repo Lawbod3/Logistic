@@ -8,6 +8,7 @@ public interface LogisticServices {
     UserRegistrationResponse registerUser(UserRegistrationRequest userRegistrationRequest);
     UserLoginResponse loginUser(UserLoginRequest userLoginRequest);
     DriverRegistrationResponse registerDriver(DriverRegistrationRequest request);
+    DispatchRiderRegistrationResponse registerDispatchRider(DispatchRiderRegistrationRequest request);
     DeliveryResponse deliver(DeliveryRequest deliveryRequest);
     UserBookARideResponse userBookARide(UserBookARideRequest userBookARideRequest);
     ActivityStatusResponse activityStatus(ActivityStatusRequest activityStatusRequest);

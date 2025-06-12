@@ -1,12 +1,15 @@
 package org.BodeLogistics.com.services;
 
 
-import org.BodeLogistics.com.data.models.User;
+
+import org.BodeLogistics.com.data.repositories.DispatchRiderRepository;
 import org.BodeLogistics.com.data.repositories.DriverRepository;
 import org.BodeLogistics.com.data.repositories.UserRepository;
+import org.BodeLogistics.com.dto.request.DispatchRiderRegistrationRequest;
 import org.BodeLogistics.com.dto.request.DriverRegistrationRequest;
 import org.BodeLogistics.com.dto.request.UserLoginRequest;
 import org.BodeLogistics.com.dto.request.UserRegistrationRequest;
+import org.BodeLogistics.com.dto.response.DispatchRiderRegistrationResponse;
 import org.BodeLogistics.com.dto.response.DriverRegistrationResponse;
 import org.BodeLogistics.com.dto.response.UserLoginResponse;
 import org.BodeLogistics.com.dto.response.UserRegistrationResponse;
@@ -28,6 +31,8 @@ public class LogisticsServicesTest {
     UserRepository userRepository;
     @Autowired
     DriverRepository driverRepository;
+    @Autowired
+    DispatchRiderRepository riderRepository;
 
     private UserRegistrationRequest userRegistrationRequest;
     private UserRegistrationResponse userRegistrationResponse;
@@ -35,11 +40,16 @@ public class LogisticsServicesTest {
     private UserLoginResponse userLoginResponse;
     private DriverRegistrationRequest becomeADriverRequest;
     private DriverRegistrationResponse becomeADriverResponse;
+    private DispatchRiderRegistrationRequest dispatchRiderRegistrationRequest;
+    private DispatchRiderRegistrationResponse dispatchRiderRegistrationResponse;
+    @Autowired
+    private DispatchRiderRepository dispatchRiderRepository;
 
     @BeforeEach
     public void setUp() {
         userRepository.deleteAll();
         driverRepository.deleteAll();
+        riderRepository.deleteAll();
 
         userRegistrationRequest = new UserRegistrationRequest();
         userRegistrationRequest.setEmail("test@test.com");
@@ -55,6 +65,10 @@ public class LogisticsServicesTest {
         becomeADriverRequest = new DriverRegistrationRequest();
         becomeADriverRequest.setDriversLicenseNumber("123456789012");
         becomeADriverRequest.setVehicleId("ABCD1234");
+
+        dispatchRiderRegistrationRequest = new DispatchRiderRegistrationRequest();
+        dispatchRiderRegistrationRequest.setRidersLicenseNumber("123456789098");
+        dispatchRiderRegistrationRequest.setMotorcycleId("AB123XYZ");
 
 
     }
@@ -138,6 +152,47 @@ public class LogisticsServicesTest {
         assertEquals("Your DriversLicense need to 12 digit Number or VehicleId need to be in this format(AbCd1234)",becomeADriverResponse.getMessage());
 
     }
+    @Test
+    public void testThatLogisticsServiceCanRegisterUserAsDispatchRider() {
+        userRegistrationResponse = logisticServices.registerUser(userRegistrationRequest);
+        assertTrue(userRepository.findByEmail(userRegistrationRequest.getEmail()).isPresent());
+        assertEquals(userRegistrationRequest.getEmail(), userRegistrationResponse.getEmail());
+        userLoginResponse = logisticServices.loginUser(userLoginRequest);
+        assertEquals(userLoginRequest.getPhoneNumber(), userLoginResponse.getPhoneNumber());
+        dispatchRiderRegistrationRequest.setUserId(userLoginResponse.getId());
+        dispatchRiderRegistrationResponse = logisticServices.registerDispatchRider(dispatchRiderRegistrationRequest);
+        assertNotNull(dispatchRiderRegistrationResponse.getMessage());
+
+    }
+    @Test
+    public void testThatLogisticsServiceCannotRegisterUserAsDispatcherWhenUserIsAlreadyADispatcher() {
+        userRegistrationResponse = logisticServices.registerUser(userRegistrationRequest);
+        assertTrue(userRepository.findByEmail(userRegistrationRequest.getEmail()).isPresent());
+        assertEquals(userRegistrationRequest.getEmail(), userRegistrationResponse.getEmail());
+
+        userLoginResponse = logisticServices.loginUser(userLoginRequest);
+        assertEquals(userLoginRequest.getPhoneNumber(), userLoginResponse.getPhoneNumber());
+
+        dispatchRiderRegistrationRequest.setUserId(userLoginResponse.getId());
+        dispatchRiderRegistrationResponse = logisticServices.registerDispatchRider(dispatchRiderRegistrationRequest);
+        assertNotNull(dispatchRiderRegistrationResponse.getMessage());
+
+        assertThrows(DriverExistException.class, () -> logisticServices.registerDispatchRider(dispatchRiderRegistrationRequest));
+    }
+    @Test
+    public void testThatLogisticsServiceCannotRegisterUserAsDispatcherWhenRequestDetailsIsWrong() {
+        userRegistrationResponse = logisticServices.registerUser(userRegistrationRequest);
+        assertTrue(userRepository.findByEmail(userRegistrationRequest.getEmail()).isPresent());
+        assertEquals(userRegistrationRequest.getEmail(), userRegistrationResponse.getEmail());
+        userLoginResponse = logisticServices.loginUser(userLoginRequest);
+        assertEquals(userLoginRequest.getPhoneNumber(), userLoginResponse.getPhoneNumber());
+        dispatchRiderRegistrationRequest.setUserId(userLoginResponse.getId());
+        dispatchRiderRegistrationRequest.setRidersLicenseNumber("123456789");
+        dispatchRiderRegistrationResponse = logisticServices.registerDispatchRider(dispatchRiderRegistrationRequest);
+        assertEquals("Your DriversLicense need to 12 digit Number or VehicleId need to be in this format(AbCd1234)",dispatchRiderRegistrationResponse.getMessage());
+    }
+
+
 
 
 
