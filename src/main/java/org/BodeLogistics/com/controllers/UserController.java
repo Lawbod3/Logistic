@@ -1,13 +1,11 @@
 package org.BodeLogistics.com.controllers;
 
 import jakarta.validation.Valid;
+import org.BodeLogistics.com.dto.request.DispatchRiderRegistrationRequest;
 import org.BodeLogistics.com.dto.request.DriverRegistrationRequest;
 import org.BodeLogistics.com.dto.request.UserLoginRequest;
 import org.BodeLogistics.com.dto.request.UserRegistrationRequest;
-import org.BodeLogistics.com.dto.response.ApiResponse;
-import org.BodeLogistics.com.dto.response.DriverRegistrationResponse;
-import org.BodeLogistics.com.dto.response.UserLoginResponse;
-import org.BodeLogistics.com.dto.response.UserRegistrationResponse;
+import org.BodeLogistics.com.dto.response.*;
 import org.BodeLogistics.com.exceptions.*;
 import org.BodeLogistics.com.service.LogisticServices;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.ParseException;
+
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -56,6 +54,17 @@ public class UserController {
     public ResponseEntity<?> registerDriver(@Valid @RequestBody DriverRegistrationRequest request ) {
         try {
             DriverRegistrationResponse response = logisticServices.registerDriver(request);
+            return new ResponseEntity<>(new ApiResponse(true, response), HttpStatus.CREATED);
+        }
+        catch(UserExistException | DriverExistException | VehicleAuthenticationException e){
+            return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/login/dispatcher-registration")
+    public ResponseEntity<?> registerDispatcher(@Valid @RequestBody DispatchRiderRegistrationRequest request ) {
+        try {
+            DispatchRiderRegistrationResponse response = logisticServices.registerDispatchRider(request);
             return new ResponseEntity<>(new ApiResponse(true, response), HttpStatus.CREATED);
         }
         catch(UserExistException | DriverExistException | VehicleAuthenticationException e){

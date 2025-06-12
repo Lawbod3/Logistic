@@ -19,7 +19,7 @@ public class Driver  {
     private String lastName;
     private String homeAddress;
     private String password;
-    private UserType userType = UserType.ORDINARY;
+    private UserType userType = UserType.DRIVER;
     private String driversLicenseNumber;
     private String vehicleId;
     private String vehicleDescription;

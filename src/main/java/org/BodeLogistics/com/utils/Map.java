@@ -1,8 +1,10 @@
 package org.BodeLogistics.com.utils;
 
+import org.BodeLogistics.com.data.models.DispatchRider;
 import org.BodeLogistics.com.data.models.Driver;
 import org.BodeLogistics.com.data.models.User;
 import org.BodeLogistics.com.data.models.UserType;
+import org.BodeLogistics.com.dto.request.DispatchRiderRegistrationRequest;
 import org.BodeLogistics.com.dto.request.DriverRegistrationRequest;
 import org.BodeLogistics.com.dto.response.UserLoginResponse;
 import org.BodeLogistics.com.dto.response.UserRegistrationResponse;
@@ -39,7 +41,6 @@ public class Map {
         driver.setPhoneNumber(user.getPhoneNumber());
         driver.setEmail(user.getEmail());
         driver.setPassword(user.getPassword());
-        driver.setUserType(UserType.DRIVER);
         user.setUserType(UserType.DRIVER);
         return driver;
     }
@@ -47,6 +48,22 @@ public class Map {
         driver.setDriversLicenseNumber(request.getDriversLicenseNumber());
         driver.setVehicleDescription(request.getVehicleDescription());
         driver.setVehicleId(request.getVehicleId().toLowerCase());
-
+    }
+    public static DispatchRider userToDispatchDriver(User user) {
+        DispatchRider dispatcher = new DispatchRider();
+        dispatcher.setUserId(user.getId());
+        dispatcher.setFirstName(user.getFirstName());
+        dispatcher.setLastName(user.getLastName());
+        dispatcher.setHomeAddress(user.getHomeAddress());
+        dispatcher.setPhoneNumber(user.getPhoneNumber());
+        dispatcher.setEmail(user.getEmail());
+        dispatcher.setPassword(user.getPassword());
+        user.setUserType(UserType.DISPATCHER);
+        return dispatcher;
+    }
+    public static void DispatchRiderRegistrationRequestToDriver(DispatchRiderRegistrationRequest request, DispatchRider rider) {
+        rider.setRidersLicenseNumber(request.getRidersLicenseNumber());
+        rider.setMotorcycleDescription(request.getMotorcycleDescription());
+        rider.setMotorcycleId(request.getMotorcycleId().toLowerCase());
     }
 }

@@ -1,10 +1,8 @@
 package org.BodeLogistics.com.service;
 
-import org.BodeLogistics.com.data.models.Driver;
-import org.BodeLogistics.com.data.models.DriverRegistrationStatus;
-import org.BodeLogistics.com.data.models.User;
-import org.BodeLogistics.com.data.models.UserType;
+import org.BodeLogistics.com.data.models.*;
 import org.BodeLogistics.com.data.repositories.ActivityRepository;
+import org.BodeLogistics.com.data.repositories.DispatchRiderRepository;
 import org.BodeLogistics.com.data.repositories.DriverRepository;
 import org.BodeLogistics.com.data.repositories.UserRepository;
 import org.BodeLogistics.com.dto.request.*;
@@ -24,6 +22,8 @@ public class LogisticServicesImpl implements LogisticServices{
     UserRepository userRepository;
     @Autowired
     DriverRepository driverRepository;
+    @Autowired
+    DispatchRiderRepository dispatchRiderRepository;
     @Autowired
     ActivityRepository activityRepository;
     @Autowired
@@ -89,6 +89,28 @@ public class LogisticServicesImpl implements LogisticServices{
     }
 
     @Override
+    public DispatchRiderRegistrationResponse registerDispatchRider(DispatchRiderRegistrationRequest request) {
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new UserExistException("User Already Exist"));
+        if(user.getUserType().equals(UserType.DISPATCHER)) throw new DriverExistException("Driver Already Exist");
+        if(dispatchRiderRepository.existsByMotorcycleId(request.getMotorcycleId().toLowerCase())) throw new VehicleAuthenticationException("This Vehicle Already Associated with another Driver");
+        DispatchRiderRegistrationResponse response = new DispatchRiderRegistrationResponse();
+        if(verifyBecomeADisPatcherRequest(request)){
+            DispatchRider rider = Map.userToDispatchDriver(user);
+            Map.DispatchRiderRegistrationRequestToDriver(request, rider);
+            response.setStatus(DriverRegistrationStatus.Success);
+            response.setMessage("Registered successfully");
+            userRepository.save(user);
+            dispatchRiderRepository.save(rider);
+        }
+        else {
+            response.setStatus(DriverRegistrationStatus.Failed);
+            response.setMessage("Your DriversLicense need to 12 digit Number or VehicleId need to be in this format(AbCd1234)");
+        }
+        return response;
+    }
+
+    @Override
     public DeliveryResponse deliver(DeliveryRequest deliveryRequest) {
         return null;
     }
@@ -106,6 +128,11 @@ public class LogisticServicesImpl implements LogisticServices{
     private boolean verifyBecomeADriverRequest(DriverRegistrationRequest becomeADriverRequest) {
         if(!becomeADriverRequest.getDriversLicenseNumber().matches("^\\d{12}$")) return false;
         if(!becomeADriverRequest.getVehicleId().matches("^[A-Za-z]{4}\\d{4}$")) return false;
+        return true;
+    }
+    private boolean verifyBecomeADisPatcherRequest(DispatchRiderRegistrationRequest request) {
+        if(!request.getRidersLicenseNumber().matches("^\\d{12}$")) return false;
+        if(!request.getMotorcycleId().matches("^[A-Za-z]{2}\\d{3}[A-za-z]{3}$")) return false;
         return true;
     }
 }
