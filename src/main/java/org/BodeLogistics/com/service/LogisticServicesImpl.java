@@ -68,7 +68,7 @@ public class LogisticServicesImpl implements LogisticServices{
     @Override
     public DriverRegistrationResponse registerDriver(DriverRegistrationRequest request) {
         User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new UserExistException("User Already Exist"));
+                .orElseThrow(() -> new UserDoesNotExistException("User Does Not Exist"));
         if(user.getUserType().equals(UserType.DRIVER)) throw new DriverExistException("Driver Already Exist");
         if(driverRepository.existsByVehicleId(request.getVehicleId().toLowerCase())) throw new VehicleAuthenticationException("This Vehicle Already Associated with another Driver");
         DriverRegistrationResponse response = new DriverRegistrationResponse();
@@ -80,20 +80,16 @@ public class LogisticServicesImpl implements LogisticServices{
             userRepository.save(user);
             driverRepository.save(driver);
         }
-        else{
-            response.setStatus(DriverRegistrationStatus.Failed);
-            response.setMessage("Your DriversLicense need to 12 digit Number or VehicleId need to be in this format(AbCd1234)");
-        }
-
+        else throw new VehicleAuthenticationException("Your DriversLicense need to 12 digit Number or VehicleId need to be in this format(AbCd1234)");
         return response;
     }
 
     @Override
     public DispatchRiderRegistrationResponse registerDispatchRider(DispatchRiderRegistrationRequest request) {
         User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new UserExistException("User Already Exist"));
-        if(user.getUserType().equals(UserType.DISPATCHER)) throw new DriverExistException("Driver Already Exist");
-        if(dispatchRiderRepository.existsByMotorcycleId(request.getMotorcycleId().toLowerCase())) throw new VehicleAuthenticationException("This Vehicle Already Associated with another Driver");
+                .orElseThrow(() -> new UserDoesNotExistException("User Does Not Exist"));
+        if(user.getUserType().equals(UserType.DISPATCHER)) throw new DispatcherExistException("Dispatcher Already Exist");
+        if(dispatchRiderRepository.existsByMotorcycleId(request.getMotorcycleId().toLowerCase())) throw new MotorcycleAuthenticationException("This Motorcycle Already Associated with another rider");
         DispatchRiderRegistrationResponse response = new DispatchRiderRegistrationResponse();
         if(verifyBecomeADisPatcherRequest(request)){
             DispatchRider rider = Map.userToDispatchDriver(user);
@@ -103,10 +99,7 @@ public class LogisticServicesImpl implements LogisticServices{
             userRepository.save(user);
             dispatchRiderRepository.save(rider);
         }
-        else {
-            response.setStatus(DriverRegistrationStatus.Failed);
-            response.setMessage("Your DriversLicense need to 12 digit Number or VehicleId need to be in this format(AbCd1234)");
-        }
+        else throw  new MotorcycleAuthenticationException("Your DriversLicense need to 12 digit Number or VehicleId need to be in this format(AbCd1234)");
         return response;
     }
 

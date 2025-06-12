@@ -6,6 +6,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/api/logistics/login")
+@RequestMapping("/api/logistics/driver")
 public class DriverControllers {
 }

@@ -56,7 +56,7 @@ public class UserController {
             DriverRegistrationResponse response = logisticServices.registerDriver(request);
             return new ResponseEntity<>(new ApiResponse(true, response), HttpStatus.CREATED);
         }
-        catch(UserExistException | DriverExistException | VehicleAuthenticationException e){
+        catch(UserDoesNotExistException | DriverExistException | VehicleAuthenticationException e){
             return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
@@ -67,7 +67,7 @@ public class UserController {
             DispatchRiderRegistrationResponse response = logisticServices.registerDispatchRider(request);
             return new ResponseEntity<>(new ApiResponse(true, response), HttpStatus.CREATED);
         }
-        catch(UserExistException | DriverExistException | VehicleAuthenticationException e){
+        catch(UserDoesNotExistException | DispatcherExistException | MotorcycleAuthenticationException e){
             return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
