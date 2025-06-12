@@ -1,13 +1,14 @@
 package org.BodeLogistics.com.utils;
 
-import org.BodeLogistics.com.data.models.DispatchRider;
-import org.BodeLogistics.com.data.models.Driver;
-import org.BodeLogistics.com.data.models.User;
-import org.BodeLogistics.com.data.models.UserType;
+import org.BodeLogistics.com.data.models.*;
+import org.BodeLogistics.com.dto.request.DeliveryRequest;
 import org.BodeLogistics.com.dto.request.DispatchRiderRegistrationRequest;
 import org.BodeLogistics.com.dto.request.DriverRegistrationRequest;
+import org.BodeLogistics.com.dto.response.DeliveryResponse;
 import org.BodeLogistics.com.dto.response.UserLoginResponse;
 import org.BodeLogistics.com.dto.response.UserRegistrationResponse;
+
+import java.time.LocalDate;
 
 public class Map {
     public static UserRegistrationResponse userToUserRegistrationResponse(User user) {
@@ -65,5 +66,22 @@ public class Map {
         rider.setRidersLicenseNumber(request.getRidersLicenseNumber());
         rider.setMotorcycleDescription(request.getMotorcycleDescription());
         rider.setMotorcycleId(request.getMotorcycleId().toLowerCase());
+    }
+    public static DispatchActivity dispatchActivityToDeliveryRequest(DeliveryRequest request) {
+        DispatchActivity activity = new DispatchActivity();
+        activity.setReceiversPhoneNumber(request.getReceiverPhoneNumber());
+        activity.setDestinationAddress(request.getDeliveryAddress());
+        activity.setActivityStatus(ActivityStatus.SearchingForDispatcher);
+        activity.setPickUpAddress(request.getPickUpAddress());
+        activity.setDate(LocalDate.now());
+        activity.setReceiversName(request.getReceiverName());
+        activity.setUserId(request.getUserId());
+        activity.setPrice(request.getPrice());
+        return activity;
+    }
+
+    public static void dispatchRiderToActivity(DispatchRider foundDispatcher, DispatchActivity activity) {
+        activity.setDriverId(foundDispatcher.getId());
+        activity.setActivityStatus(ActivityStatus.FoundDispatcher);
     }
 }

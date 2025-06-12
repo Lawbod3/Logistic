@@ -23,5 +23,6 @@ public class Driver  {
     private String driversLicenseNumber;
     private String vehicleId;
     private String vehicleDescription;
-    private List<Activity> rideActivities;
+    private boolean available;
+    private List<RideActivity> rideActivities;
 }

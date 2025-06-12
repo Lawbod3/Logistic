@@ -83,6 +83,11 @@ public class LogisticServicesImpl implements LogisticServices{
         else throw new VehicleAuthenticationException("Your DriversLicense need to 12 digit Number or VehicleId need to be in this format(AbCd1234)");
         return response;
     }
+    private boolean verifyBecomeADriverRequest(DriverRegistrationRequest becomeADriverRequest) {
+        if(!becomeADriverRequest.getDriversLicenseNumber().matches("^\\d{12}$")) return false;
+        if(!becomeADriverRequest.getVehicleId().matches("^[A-Za-z]{4}\\d{4}$")) return false;
+        return true;
+    }
 
     @Override
     public DispatchRiderRegistrationResponse registerDispatchRider(DispatchRiderRegistrationRequest request) {
@@ -102,11 +107,25 @@ public class LogisticServicesImpl implements LogisticServices{
         else throw  new MotorcycleAuthenticationException("Your DriversLicense need to 12 digit Number or VehicleId need to be in this format(AbCd1234)");
         return response;
     }
+    private boolean verifyBecomeADisPatcherRequest(DispatchRiderRegistrationRequest request) {
+        if(!request.getRidersLicenseNumber().matches("^\\d{12}$")) return false;
+        if(!request.getMotorcycleId().matches("^[A-Za-z]{2}\\d{3}[A-za-z]{3}$")) return false;
+        return true;
+    }
 
     @Override
-    public DeliveryResponse deliver(DeliveryRequest deliveryRequest) {
-        return null;
+    public DeliveryResponse dispatchRequest(DeliveryRequest deliveryRequest) {
+        DispatchActivity dispatchActivity = Map.dispatchActivityToDeliveryRequest(deliveryRequest);
+        DispatchRider  foundDispatcher = searchForDriverService(dispatchActivity);
+        Map.dispatchRiderToActivity(foundDispatcher,dispatchActivity);
+        return new DeliveryResponse(foundDispatcher,dispatchActivity);
     }
+
+    private DispatchRider searchForDriverService(DispatchActivity dispatchActivity) {
+      return dispatchRiderRepository.findDispatchRiderByAvailable(true)
+              .orElseThrow(() -> new DispatcherNotAvailableException("No dispatch rider available at the moment"));
+    }
+
 
     @Override
     public UserBookARideResponse userBookARide(UserBookARideRequest userBookARideRequest) {
@@ -115,17 +134,9 @@ public class LogisticServicesImpl implements LogisticServices{
     }
 
     @Override
-    public ActivityStatusResponse activityStatus(ActivityStatusRequest activityStatusRequest) {
+    public RideResponse activityStatus(RideRequest activityStatusRequest) {
         return null;
     }
-    private boolean verifyBecomeADriverRequest(DriverRegistrationRequest becomeADriverRequest) {
-        if(!becomeADriverRequest.getDriversLicenseNumber().matches("^\\d{12}$")) return false;
-        if(!becomeADriverRequest.getVehicleId().matches("^[A-Za-z]{4}\\d{4}$")) return false;
-        return true;
-    }
-    private boolean verifyBecomeADisPatcherRequest(DispatchRiderRegistrationRequest request) {
-        if(!request.getRidersLicenseNumber().matches("^\\d{12}$")) return false;
-        if(!request.getMotorcycleId().matches("^[A-Za-z]{2}\\d{3}[A-za-z]{3}$")) return false;
-        return true;
-    }
+
+
 }
