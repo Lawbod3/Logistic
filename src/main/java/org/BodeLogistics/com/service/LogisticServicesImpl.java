@@ -66,13 +66,15 @@ public class LogisticServicesImpl implements LogisticServices{
     }
 
     @Override
-    public BecomeADriverResponse becomeDriver(BecomeADriverRequest becomeADriverRequest) {
-        User user = userRepository.findById(becomeADriverRequest.getUserId())
+    public DriverRegistrationResponse registerDriver(DriverRegistrationRequest request) {
+        User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new UserExistException("User Already Exist"));
         if(user.getUserType().equals(UserType.DRIVER)) throw new DriverExistException("Driver Already Exist");
-        BecomeADriverResponse response = new BecomeADriverResponse();
-        if(verifyBecomeADriverRequest(becomeADriverRequest)){
+        if(driverRepository.existsByVehicleId(request.getVehicleId().toLowerCase())) throw new VehicleAuthenticationException("This Vehicle Already Associated with another Driver");
+        DriverRegistrationResponse response = new DriverRegistrationResponse();
+        if(verifyBecomeADriverRequest(request)){
             Driver driver = Map.userToDriver(user);
+            Map.driverRegistrationRequestToDriver(request, driver);
             response.setStatus(DriverRegistrationStatus.Success);
             response.setMessage("Registered successfully");
             userRepository.save(user);
@@ -101,7 +103,7 @@ public class LogisticServicesImpl implements LogisticServices{
     public ActivityStatusResponse activityStatus(ActivityStatusRequest activityStatusRequest) {
         return null;
     }
-    private boolean verifyBecomeADriverRequest(BecomeADriverRequest becomeADriverRequest) {
+    private boolean verifyBecomeADriverRequest(DriverRegistrationRequest becomeADriverRequest) {
         if(!becomeADriverRequest.getDriversLicenseNumber().matches("^\\d{12}$")) return false;
         if(!becomeADriverRequest.getVehicleId().matches("^[A-Za-z]{4}\\d{4}$")) return false;
         return true;

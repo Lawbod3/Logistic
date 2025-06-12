@@ -4,9 +4,8 @@ import lombok.Data;
 import org.BodeLogistics.com.data.models.DriverRegistrationStatus;
 
 @Data
-public class BecomeADriverResponse {
+public class DriverRegistrationResponse {
     private DriverRegistrationStatus status;
-    private boolean isADriver;
     private String message;
 
 }

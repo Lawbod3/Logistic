@@ -7,7 +7,7 @@ import org.BodeLogistics.com.dto.response.*;
 public interface LogisticServices {
     UserRegistrationResponse registerUser(UserRegistrationRequest userRegistrationRequest);
     UserLoginResponse loginUser(UserLoginRequest userLoginRequest);
-    BecomeADriverResponse becomeDriver(BecomeADriverRequest becomeADriverRequest);
+    DriverRegistrationResponse registerDriver(DriverRegistrationRequest request);
     DeliveryResponse deliver(DeliveryRequest deliveryRequest);
     UserBookARideResponse userBookARide(UserBookARideRequest userBookARideRequest);
     ActivityStatusResponse activityStatus(ActivityStatusRequest activityStatusRequest);
