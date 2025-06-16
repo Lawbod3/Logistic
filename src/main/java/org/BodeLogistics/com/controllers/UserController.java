@@ -69,17 +69,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/login/dispatch-request")
-    public ResponseEntity<?> dispatchRequest(@Valid @RequestBody DeliveryRequest request){
-        try{
-            DeliveryResponse response = logisticServices.dispatchRequest(request);
-            return new ResponseEntity<>(new ApiResponse(true, response), HttpStatus.CREATED);
-        }
-        catch(DispatcherNotAvailableException e){
-            return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), HttpStatus.BAD_REQUEST);
-        }
 
-    }
 
 
 

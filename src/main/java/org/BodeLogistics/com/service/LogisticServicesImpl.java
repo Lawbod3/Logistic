@@ -107,10 +107,28 @@ public class LogisticServicesImpl implements LogisticServices{
         else throw  new MotorcycleAuthenticationException("Your DriversLicense need to 12 digit Number or VehicleId need to be in this format(AbCd1234)");
         return response;
     }
+
     private boolean verifyBecomeADisPatcherRequest(DispatchRiderRegistrationRequest request) {
         if(!request.getRidersLicenseNumber().matches("^\\d{12}$")) return false;
         if(!request.getMotorcycleId().matches("^[A-Za-z]{2}\\d{3}[A-za-z]{3}$")) return false;
         return true;
+    }
+
+    @Override
+    public DispatchRiderAvailableResponse setDispatchRiderToAvailable(DispatchRiderAvailableRequest request) {
+        DispatchRider rider = dispatchRiderRepository.findByUserId(request.getRiderId())
+                .orElseThrow(() -> new RiderDoesNotExistException("Rider does not exist"));
+        rider.setAvailable(true);
+        dispatchRiderRepository.save(rider);
+        DispatchRiderAvailableResponse response = new DispatchRiderAvailableResponse();
+        response.setSuccess(true);
+        response.setMessage("Rider is available");
+        return response;
+    }
+
+    @Override
+    public DriverAvailableResponse setDriverToAvailable(DriverAvailableRequest request) {
+        return null;
     }
 
     @Override
@@ -129,6 +147,7 @@ public class LogisticServicesImpl implements LogisticServices{
 
     @Override
     public UserBookARideResponse userBookARide(UserBookARideRequest userBookARideRequest) {
+
         return null;
 
     }

@@ -2,6 +2,7 @@ package org.BodeLogistics.com.services;
 
 
 
+import org.BodeLogistics.com.data.models.ActivityStatus;
 import org.BodeLogistics.com.data.repositories.DispatchRiderRepository;
 import org.BodeLogistics.com.data.repositories.DriverRepository;
 import org.BodeLogistics.com.data.repositories.UserRepository;
@@ -38,8 +39,9 @@ public class LogisticsServicesTest {
     private DispatchRiderRegistrationResponse dispatchRiderRegistrationResponse;
     private DeliveryRequest deliveryRequest;
     private DeliveryResponse deliveryResponse;
-    @Autowired
-    private DispatchRiderRepository dispatchRiderRepository;
+    private DispatchRiderAvailableRequest dispatchRiderAvailableRequest;
+    private DispatchRiderAvailableResponse dispatchRiderAvailableResponse;
+
 
     @BeforeEach
     public void setUp() {
@@ -73,6 +75,8 @@ public class LogisticsServicesTest {
         deliveryRequest.setReceiverName("Adam");
         deliveryRequest.setReceiverPhoneNumber("123456789");
         deliveryRequest.setSenderPhoneNumber("22222222222");
+
+        dispatchRiderAvailableRequest = new DispatchRiderAvailableRequest();
 
 
     }
@@ -206,6 +210,28 @@ public class LogisticsServicesTest {
         deliveryRequest.setUserId(userLoginResponse.getId());
         assertThrows(DispatcherNotAvailableException.class, () -> logisticServices.dispatchRequest(deliveryRequest));
 
+    }
+
+    @Test
+    public void testThatUserCanGetDispatcherFromDeliveryRequestWhenRiderIsAvailable() {
+        userRegistrationResponse = logisticServices.registerUser(userRegistrationRequest);
+        assertTrue(userRepository.findByEmail(userRegistrationRequest.getEmail()).isPresent());
+        assertEquals(userRegistrationRequest.getEmail(), userRegistrationResponse.getEmail());
+        userLoginResponse = logisticServices.loginUser(userLoginRequest);
+        assertEquals(userLoginRequest.getPhoneNumber(), userLoginResponse.getPhoneNumber());
+        dispatchRiderRegistrationRequest.setUserId(userLoginResponse.getId());
+        dispatchRiderRegistrationResponse = logisticServices.registerDispatchRider(dispatchRiderRegistrationRequest);
+        assertNotNull(dispatchRiderRegistrationResponse.getMessage());
+
+        deliveryRequest.setUserId(userLoginResponse.getId());
+        assertThrows(DispatcherNotAvailableException.class, () -> logisticServices.dispatchRequest(deliveryRequest));
+
+        dispatchRiderAvailableRequest.setRiderId(userLoginResponse.getId());
+        dispatchRiderAvailableResponse = logisticServices.setDispatchRiderToAvailable(dispatchRiderAvailableRequest);
+        assertEquals("Rider is available",dispatchRiderAvailableResponse.getMessage());
+        deliveryResponse = logisticServices.dispatchRequest(deliveryRequest);
+        assertEquals(userLoginResponse.getId(), deliveryResponse.getRiders().getUserId());
+        assertEquals(ActivityStatus.FoundDispatcher, deliveryResponse.getActivity().getActivityStatus());
     }
 
 

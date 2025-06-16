@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.List;
 
 @Data
-@Document("DispatchDriver")
+@Document("DispatchRider")
 public class DispatchRider {
     @Id
     private String id;

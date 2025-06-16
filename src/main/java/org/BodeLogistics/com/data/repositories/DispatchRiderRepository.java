@@ -13,8 +13,6 @@ public interface DispatchRiderRepository extends MongoRepository<DispatchRider,S
     Optional<DispatchRider> findByPhoneNumber(String phoneNumber);
     boolean existsByPhoneNumber(String phoneNumber);
     boolean existsByMotorcycleId(String motorcycleId);
-
    Optional<DispatchRider> findDispatchRiderByAvailable(boolean available);
-
-
+   Optional<DispatchRider> findByUserId(String userId);
 }

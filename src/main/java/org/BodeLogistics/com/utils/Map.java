@@ -5,6 +5,7 @@ import org.BodeLogistics.com.dto.request.DeliveryRequest;
 import org.BodeLogistics.com.dto.request.DispatchRiderRegistrationRequest;
 import org.BodeLogistics.com.dto.request.DriverRegistrationRequest;
 import org.BodeLogistics.com.dto.response.DeliveryResponse;
+import org.BodeLogistics.com.dto.response.DispatcherActivityResponse;
 import org.BodeLogistics.com.dto.response.UserLoginResponse;
 import org.BodeLogistics.com.dto.response.UserRegistrationResponse;
 
@@ -83,5 +84,20 @@ public class Map {
     public static void dispatchRiderToActivity(DispatchRider foundDispatcher, DispatchActivity activity) {
         activity.setDriverId(foundDispatcher.getId());
         activity.setActivityStatus(ActivityStatus.FoundDispatcher);
+    }
+
+    public static DispatcherActivityResponse dispatchActivityResponseToRider(DispatchRider rider) {
+        DispatcherActivityResponse response = new DispatcherActivityResponse();
+        response.setAvailable(rider.isAvailable());
+        response.setTotalActivities(rider.getDispatchedActivities().size());
+        response.setMotorcycleId(rider.getMotorcycleId());
+        response.setMotorcycleDescription(rider.getMotorcycleDescription());
+        response.setFirstName(rider.getFirstName());
+        response.setLastName(rider.getLastName());
+        response.setEmail(rider.getEmail());
+        response.setUserType(rider.getUserType());
+        response.setPhoneNumber(rider.getPhoneNumber());
+        response.setUserId(rider.getUserId());
+        return response;
     }
 }

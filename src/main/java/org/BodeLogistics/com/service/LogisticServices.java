@@ -9,7 +9,10 @@ public interface LogisticServices {
     UserLoginResponse loginUser(UserLoginRequest userLoginRequest);
     DriverRegistrationResponse registerDriver(DriverRegistrationRequest request);
     DispatchRiderRegistrationResponse registerDispatchRider(DispatchRiderRegistrationRequest request);
+    DispatchRiderAvailableResponse setDispatchRiderToAvailable(DispatchRiderAvailableRequest request);
+    DriverAvailableResponse setDriverToAvailable(DriverAvailableRequest request);
     DeliveryResponse dispatchRequest(DeliveryRequest deliveryRequest);
+
     UserBookARideResponse userBookARide(UserBookARideRequest userBookARideRequest);
     RideResponse activityStatus(RideRequest activityStatusRequest);
 
