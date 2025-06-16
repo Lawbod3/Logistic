@@ -230,7 +230,7 @@ public class LogisticsServicesTest {
         dispatchRiderAvailableResponse = logisticServices.setDispatchRiderToAvailable(dispatchRiderAvailableRequest);
         assertEquals("Rider is available",dispatchRiderAvailableResponse.getMessage());
         deliveryResponse = logisticServices.dispatchRequest(deliveryRequest);
-        assertEquals(userLoginResponse.getId(), deliveryResponse.getRiders().getUserId());
+        assertEquals(userLoginResponse.getId(), deliveryResponse.getDispatcherActivityResponse().getUserId());
         assertEquals(ActivityStatus.FoundDispatcher, deliveryResponse.getActivity().getActivityStatus());
     }
 

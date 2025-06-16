@@ -10,6 +10,6 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class DeliveryResponse {
-    private DispatchRider riders;
+    private DispatcherActivityResponse dispatcherActivityResponse;
     private DispatchActivity activity;
 }

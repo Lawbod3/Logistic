@@ -81,15 +81,15 @@ public class Map {
         return activity;
     }
 
-    public static void dispatchRiderToActivity(DispatchRider foundDispatcher, DispatchActivity activity) {
-        activity.setDriverId(foundDispatcher.getId());
+    public static void dispatchRiderToActivity(DispatcherActivityResponse foundDispatcher, DispatchActivity activity) {
+        activity.setDriverId(foundDispatcher.getUserId());
         activity.setActivityStatus(ActivityStatus.FoundDispatcher);
     }
 
     public static DispatcherActivityResponse dispatchActivityResponseToRider(DispatchRider rider) {
         DispatcherActivityResponse response = new DispatcherActivityResponse();
         response.setAvailable(rider.isAvailable());
-        response.setTotalActivities(rider.getDispatchedActivities().size());
+        response.setDispatchedActivities(rider.getDispatchedActivities());
         response.setMotorcycleId(rider.getMotorcycleId());
         response.setMotorcycleDescription(rider.getMotorcycleDescription());
         response.setFirstName(rider.getFirstName());

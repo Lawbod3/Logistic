@@ -135,8 +135,9 @@ public class LogisticServicesImpl implements LogisticServices{
     public DeliveryResponse dispatchRequest(DeliveryRequest deliveryRequest) {
         DispatchActivity dispatchActivity = Map.dispatchActivityToDeliveryRequest(deliveryRequest);
         DispatchRider  foundDispatcher = searchForDriverService(dispatchActivity);
-        Map.dispatchRiderToActivity(foundDispatcher,dispatchActivity);
-        return new DeliveryResponse(foundDispatcher,dispatchActivity);
+        DispatcherActivityResponse dispatchActivityResponse = Map.dispatchActivityResponseToRider(foundDispatcher);
+        Map.dispatchRiderToActivity(dispatchActivityResponse,dispatchActivity);
+        return new DeliveryResponse(dispatchActivityResponse,dispatchActivity);
     }
 
     private DispatchRider searchForDriverService(DispatchActivity dispatchActivity) {
