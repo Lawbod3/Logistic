@@ -15,4 +15,6 @@ public interface RideActivityRepository extends MongoRepository<RideActivity, St
     Optional<List<RideActivity>> findAllByDate(LocalDate date);
     Optional<List<RideActivity>> findByDriverId(String driverId);
 
+
+
 }

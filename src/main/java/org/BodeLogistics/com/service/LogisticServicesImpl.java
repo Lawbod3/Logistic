@@ -157,16 +157,12 @@ public class LogisticServicesImpl implements LogisticServices{
 
 
 
-    @Override
-    public SetChatToActiveResponse setChatToActive(SetChatToActiveRequest request) {
-        return null;
-    }
+
 
 
 
     @Override
     public UserBookARideForSomeoneResponse userBookARideForSomeone(UserBookARideForSomeoneRequest userBookARideRequest) {
-
         return null;
 
     }
