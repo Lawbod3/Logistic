@@ -2,7 +2,7 @@ package org.BodeLogistics.com.repositories;
 
 import org.BodeLogistics.com.data.models.RideActivity;
 import org.BodeLogistics.com.data.models.User;
-import org.BodeLogistics.com.data.repositories.ActivityRepository;
+import org.BodeLogistics.com.data.repositories.RideActivityRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
 @SpringBootTest
 public class ActivityRepositoryTest {
     @Autowired
-    ActivityRepository activityRepository;
+    RideActivityRepository activityRepository;
     private User user;
     private User driver;
     private RideActivity activity;

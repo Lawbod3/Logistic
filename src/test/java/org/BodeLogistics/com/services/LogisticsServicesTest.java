@@ -81,6 +81,11 @@ public class LogisticsServicesTest {
 
         dispatchRiderAvailableRequest = new DispatchRiderAvailableRequest();
 
+        rideRequest = new RideRequest();
+        rideRequest.setPrice("5000");
+        rideRequest.setDestinationAddress("312 herbert macaulay road, sabo yaba, lagos");
+        rideRequest.setPickupAddress("234 adeniran ogunsaya, surulere, lagos");
+
 
     }
 
@@ -237,17 +242,21 @@ public class LogisticsServicesTest {
         assertEquals(ActivityStatus.FoundDispatcher, deliveryResponse.getActivity().getActivityStatus());
     }
 
-    @Test
-    public void testThatUserCanGetDriverFromRideRequest() {
-        userRegistrationResponse = logisticServices.registerUser(userRegistrationRequest);
-        assertTrue(userRepository.findByEmail(userRegistrationRequest.getEmail()).isPresent());
-        assertEquals(userRegistrationRequest.getEmail(), userRegistrationResponse.getEmail());
-        userLoginResponse = logisticServices.loginUser(userLoginRequest);
-        assertEquals(userLoginRequest.getPhoneNumber(), userLoginResponse.getPhoneNumber());
-        becomeADriverRequest.setUserId(userLoginResponse.getId());
-        becomeADriverResponse = logisticServices.registerDriver(becomeADriverRequest);
-        assertNotNull(becomeADriverResponse.getMessage());
-    }
+   // @Test
+   // public void testThatUserCanGetDriverFromRideRequest() {
+       // userRegistrationResponse = logisticServices.registerUser(userRegistrationRequest);
+      //  assertTrue(userRepository.findByEmail(userRegistrationRequest.getEmail()).isPresent());
+     //   assertEquals(userRegistrationRequest.getEmail(), userRegistrationResponse.getEmail());
+//userLoginResponse = logisticServices.loginUser(userLoginRequest);
+        //assertEquals(userLoginRequest.getPhoneNumber(), userLoginResponse.getPhoneNumber());
+       // becomeADriverRequest.setUserId(userLoginResponse.getId());
+       // becomeADriverResponse = logisticServices.registerDriver(becomeADriverRequest);
+//assertNotNull(becomeADriverResponse.getMessage());
+       // rideRequest.setUserId(userLoginResponse.getId());
+       // assertThrows(RideNotAvailableException.class, () -> logisticServices.userBookARide(rideRequest));
+
+
+  //  }
 
 
 

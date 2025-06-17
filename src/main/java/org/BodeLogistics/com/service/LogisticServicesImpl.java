@@ -22,7 +22,9 @@ public class LogisticServicesImpl implements LogisticServices{
     @Autowired
     DispatchRiderRepository dispatchRiderRepository;
     @Autowired
-    ActivityRepository activityRepository;
+    RideActivityRepository activityRepository;
+    @Autowired
+    DispatchActivityRepository dispatchActivityRepository;
     @Autowired
     ChatMessageRepository chatMessageRepository;
     @Autowired
@@ -103,7 +105,7 @@ public class LogisticServicesImpl implements LogisticServices{
             userRepository.save(user);
             dispatchRiderRepository.save(rider);
         }
-        else throw  new MotorcycleAuthenticationException("Your DriversLicense need to 12 digit Number or VehicleId need to be in this format(AbCd1234)");
+        else throw  new MotorcycleAuthenticationException("Your DriversLicense need to 12 digit Number or VehicleId need to be in this format(Ab123Qwe)");
         return response;
     }
 
@@ -133,9 +135,10 @@ public class LogisticServicesImpl implements LogisticServices{
     @Override
     public DeliveryResponse dispatchRequest(DeliveryRequest deliveryRequest) {
         DispatchActivity dispatchActivity = Map.dispatchActivityToDeliveryRequest(deliveryRequest);
-        DispatchRider  foundDispatcher = searchForDriverService(dispatchActivity);
-        DispatcherActivityResponse dispatchActivityResponse = Map.dispatchActivityResponseToRider(foundDispatcher);
+        DispatchRider  foundDispatcher = searchForRideService();
+        DispatcherProfileResponse dispatchActivityResponse = Map.dispatchActivityResponseToRider(foundDispatcher);
         Map.dispatchRiderToActivity(dispatchActivityResponse,dispatchActivity);
+        dispatchActivity = dispatchActivityRepository.save(dispatchActivity);
         return new DeliveryResponse(dispatchActivityResponse,dispatchActivity);
     }
 
@@ -144,17 +147,24 @@ public class LogisticServicesImpl implements LogisticServices{
         return null;
     }
 
-    private DispatchRider searchForDriverService(DispatchActivity dispatchActivity) {
+    private DispatchRider searchForRideService() {
       return dispatchRiderRepository.findDispatchRiderByAvailable(true)
               .orElseThrow(() -> new DispatcherNotAvailableException("No dispatch rider available at the moment"));
     }
 
 
     @Override
-    public UserBookARideResponse userBookARide(UserBookARideRequest userBookARideRequest) {
+    public UserBookARideForSomeoneResponse userBookARideForSomeone(UserBookARideForSomeoneRequest userBookARideRequest) {
 
         return null;
 
+    }
+
+    @Override
+    public RideRequest userBookARide(RideRequest rideRequest) {
+        RideActivity activity = Map.rideActivityToRideRequest(rideRequest);
+
+        return null;
     }
 
     @Override

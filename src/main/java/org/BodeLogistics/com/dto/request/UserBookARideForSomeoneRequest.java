@@ -3,11 +3,8 @@ package org.BodeLogistics.com.dto.request;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
-
-import java.time.LocalDate;
-
 @Data
-public class UserBookARideRequest {
+public class UserBookARideForSomeoneRequest {
     @NotBlank
     private String userId;
     @NotBlank

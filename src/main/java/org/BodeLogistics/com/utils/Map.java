@@ -4,8 +4,8 @@ import org.BodeLogistics.com.data.models.*;
 import org.BodeLogistics.com.dto.request.DeliveryRequest;
 import org.BodeLogistics.com.dto.request.DispatchRiderRegistrationRequest;
 import org.BodeLogistics.com.dto.request.DriverRegistrationRequest;
-import org.BodeLogistics.com.dto.response.DeliveryResponse;
-import org.BodeLogistics.com.dto.response.DispatcherActivityResponse;
+import org.BodeLogistics.com.dto.request.RideRequest;
+import org.BodeLogistics.com.dto.response.DispatcherProfileResponse;
 import org.BodeLogistics.com.dto.response.UserLoginResponse;
 import org.BodeLogistics.com.dto.response.UserRegistrationResponse;
 
@@ -81,13 +81,12 @@ public class Map {
         return activity;
     }
 
-    public static void dispatchRiderToActivity(DispatcherActivityResponse foundDispatcher, DispatchActivity activity) {
-        activity.setDriverId(foundDispatcher.getUserId());
+    public static void dispatchRiderToActivity(DispatcherProfileResponse foundDispatcher, DispatchActivity activity) {
         activity.setActivityStatus(ActivityStatus.FoundDispatcher);
     }
 
-    public static DispatcherActivityResponse dispatchActivityResponseToRider(DispatchRider rider) {
-        DispatcherActivityResponse response = new DispatcherActivityResponse();
+    public static DispatcherProfileResponse dispatchActivityResponseToRider(DispatchRider rider) {
+        DispatcherProfileResponse response = new DispatcherProfileResponse();
         response.setAvailable(true);
         response.setDispatchedActivities(rider.getDispatchedActivities());
         response.setMotorcycleId(rider.getMotorcycleId());
@@ -97,7 +96,18 @@ public class Map {
         response.setEmail(rider.getEmail());
         response.setUserType(rider.getUserType());
         response.setPhoneNumber(rider.getPhoneNumber());
-        response.setUserId(rider.getUserId());
+
         return response;
+    }
+
+    public static RideActivity rideActivityToRideRequest(RideRequest request) {
+        RideActivity activity = new RideActivity();
+        activity.setUserId(request.getUserId());
+        activity.setPickUpAddress(request.getPickupAddress());
+        activity.setPrice(request.getPrice());
+        activity.setDestinationAddress(request.getDestinationAddress());
+        activity.setDate(LocalDate.now());
+        activity.setActivityStatus(ActivityStatus.SearchingForRide);
+        return activity;
     }
 }

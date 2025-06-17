@@ -13,7 +13,8 @@ public interface LogisticServices {
     DriverAvailableResponse setDriverToAvailable(DriverAvailableRequest request);
     DeliveryResponse dispatchRequest(DeliveryRequest deliveryRequest);
     SetChatToActiveResponse setChatToActive(SetChatToActiveRequest request);
-    UserBookARideResponse userBookARide(UserBookARideRequest userBookARideRequest);
+    UserBookARideForSomeoneResponse userBookARideForSomeone(UserBookARideForSomeoneRequest userBookARideRequest);
+    RideRequest userBookARide(RideRequest rideRequest);
     RideResponse activityStatus(RideRequest activityStatusRequest);
 
 

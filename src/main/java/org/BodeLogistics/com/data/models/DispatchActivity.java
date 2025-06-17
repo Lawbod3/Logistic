@@ -20,7 +20,7 @@ public class DispatchActivity {
     private String destinationAddress;
     private LocalDate date;
     private String price;
-    private String driverId;
+    private String dispatcherId;
     private String userId;
     private String userComment;
     private String DispatcherComment;

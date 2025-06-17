@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ActivityRepository extends MongoRepository<RideActivity, String> {
+public interface RideActivityRepository extends MongoRepository<RideActivity, String> {
 
     Optional<List<RideActivity>> findAllByUserId(String userId);
     Optional<List<RideActivity>> findAllByDate(LocalDate date);

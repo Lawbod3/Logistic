@@ -7,9 +7,9 @@ import org.BodeLogistics.com.data.models.UserType;
 import java.util.List;
 
 @Data
-public class DispatcherActivityResponse {
+public class DispatcherProfileResponse {
 
-    private String userId;
+
     private String phoneNumber;
     private String email;
     private String firstName;
@@ -18,5 +18,6 @@ public class DispatcherActivityResponse {
     private String motorcycleId;
     private String  motorcycleDescription;
     private boolean available;
+
     private List<RideActivity> dispatchedActivities;
 }
