@@ -188,10 +188,6 @@ public class LogisticServicesImpl implements LogisticServices{
     }
 
 
-    @Override
-    public RideResponse activityStatus(RideRequest activityStatusRequest) {
-        return null;
-    }
 
 
 }

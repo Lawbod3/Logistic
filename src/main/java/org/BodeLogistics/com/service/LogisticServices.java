@@ -15,7 +15,7 @@ public interface LogisticServices {
     SetChatToActiveResponse setChatToActive(SetChatToActiveRequest request);
     UserBookARideForSomeoneResponse userBookARideForSomeone(UserBookARideForSomeoneRequest userBookARideRequest);
     RideResponse userBookARide(RideRequest rideRequest);
-    RideResponse activityStatus(RideRequest activityStatusRequest);
+
 
 
 
