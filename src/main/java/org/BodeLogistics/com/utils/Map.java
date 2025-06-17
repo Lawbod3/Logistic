@@ -6,6 +6,7 @@ import org.BodeLogistics.com.dto.request.DispatchRiderRegistrationRequest;
 import org.BodeLogistics.com.dto.request.DriverRegistrationRequest;
 import org.BodeLogistics.com.dto.request.RideRequest;
 import org.BodeLogistics.com.dto.response.DispatcherProfileResponse;
+import org.BodeLogistics.com.dto.response.DriverProfileResponse;
 import org.BodeLogistics.com.dto.response.UserLoginResponse;
 import org.BodeLogistics.com.dto.response.UserRegistrationResponse;
 
@@ -81,7 +82,8 @@ public class Map {
         return activity;
     }
 
-    public static void dispatchRiderToActivity(DispatcherProfileResponse foundDispatcher, DispatchActivity activity) {
+    public static void dispatchRiderToActivity(DispatchRider foundDispatcher, DispatchActivity activity) {
+        activity.setDispatcherId(foundDispatcher.getId());
         activity.setActivityStatus(ActivityStatus.FoundDispatcher);
     }
 
@@ -109,5 +111,24 @@ public class Map {
         activity.setDate(LocalDate.now());
         activity.setActivityStatus(ActivityStatus.SearchingForRide);
         return activity;
+    }
+
+    public static DriverProfileResponse dispatchActivityResponseToDriver(Driver foundDriver) {
+        DriverProfileResponse response = new DriverProfileResponse();
+        response.setAvailable(true);
+        response.setRideActivities(foundDriver.getRideActivities());
+        response.setVehicleDescription(foundDriver.getVehicleDescription());
+        response.setVehicleId(foundDriver.getVehicleId());
+        response.setFirstName(foundDriver.getFirstName());
+        response.setLastName(foundDriver.getLastName());
+        response.setEmail(foundDriver.getEmail());
+        response.setUserType(foundDriver.getUserType());
+        response.setPhoneNumber(foundDriver.getPhoneNumber());
+        return response;
+    }
+
+    public static void driverToActivity(Driver foundDriver, RideActivity activity) {
+        activity.setDriverId(foundDriver.getId());
+        activity.setActivityStatus(ActivityStatus.FoundDriver);
     }
 }

@@ -12,6 +12,7 @@ import org.BodeLogistics.com.service.LogisticServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
@@ -59,8 +60,8 @@ public class RiderController {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleValidationExceptions(MethodArgumentNotValidException e) {
-        String errorMessage = "One or more request form  are invalid or not filled";
-        return createErrorResponse(new Exception(errorMessage), HttpStatus.BAD_REQUEST);
+        FieldError errorMessage = e.getBindingResult().getFieldError();
+        return createErrorResponse(new Exception(errorMessage.getDefaultMessage()), HttpStatus.BAD_REQUEST);
     }
 
 }

@@ -129,28 +129,39 @@ public class LogisticServicesImpl implements LogisticServices{
 
     @Override
     public DriverAvailableResponse setDriverToAvailable(DriverAvailableRequest request) {
-        return null;
+        Driver driver = driverRepository.findByUserId(request.getDriverId())
+                .orElseThrow(() -> new DriverDoesNotExistException("Driver does not exist"));
+        driver.setAvailable(true);
+        driverRepository.save(driver);
+        DriverAvailableResponse response = new DriverAvailableResponse();
+        response.setSuccess(true);
+        response.setMessage("Driver is available");
+        return response;
     }
 
     @Override
     public DeliveryResponse dispatchRequest(DeliveryRequest deliveryRequest) {
         DispatchActivity dispatchActivity = Map.dispatchActivityToDeliveryRequest(deliveryRequest);
-        DispatchRider  foundDispatcher = searchForRideService();
+        DispatchRider  foundDispatcher = searchForDispatcherService();
         DispatcherProfileResponse dispatchActivityResponse = Map.dispatchActivityResponseToRider(foundDispatcher);
-        Map.dispatchRiderToActivity(dispatchActivityResponse,dispatchActivity);
+        Map.dispatchRiderToActivity(foundDispatcher,dispatchActivity);
         dispatchActivity = dispatchActivityRepository.save(dispatchActivity);
         return new DeliveryResponse(dispatchActivityResponse,dispatchActivity);
     }
+
+    private DispatchRider searchForDispatcherService() {
+        return dispatchRiderRepository.findDispatchRiderByAvailable(true)
+                .orElseThrow(() -> new DispatcherNotAvailableException("No dispatch rider available at the moment"));
+    }
+
+
+
 
     @Override
     public SetChatToActiveResponse setChatToActive(SetChatToActiveRequest request) {
         return null;
     }
 
-    private DispatchRider searchForRideService() {
-      return dispatchRiderRepository.findDispatchRiderByAvailable(true)
-              .orElseThrow(() -> new DispatcherNotAvailableException("No dispatch rider available at the moment"));
-    }
 
 
     @Override
@@ -161,11 +172,21 @@ public class LogisticServicesImpl implements LogisticServices{
     }
 
     @Override
-    public RideRequest userBookARide(RideRequest rideRequest) {
+    public RideResponse userBookARide(RideRequest rideRequest) {
         RideActivity activity = Map.rideActivityToRideRequest(rideRequest);
+        Driver foundDriver = searchForDriverService();
+        DriverProfileResponse driverProfileResponse = Map.dispatchActivityResponseToDriver(foundDriver);
+        Map.driverToActivity(foundDriver,activity);
+        activity = activityRepository.save(activity);
+        return new RideResponse(driverProfileResponse, activity);
 
-        return null;
     }
+
+    private Driver searchForDriverService() {
+        return driverRepository.findRideByAvailable(true)
+                .orElseThrow(() -> new DriverNotAvailableException("No Driver available at the moment"));
+    }
+
 
     @Override
     public RideResponse activityStatus(RideRequest activityStatusRequest) {

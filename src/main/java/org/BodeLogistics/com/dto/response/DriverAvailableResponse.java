@@ -4,5 +4,8 @@ import lombok.Data;
 
 @Data
 public class DriverAvailableResponse {
-    private boolean available;
+    private boolean success;
+    private String message;
+
+
 }

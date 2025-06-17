@@ -44,6 +44,8 @@ public class LogisticsServicesTest {
     private RideResponse rideResponse;
     private DispatchRiderAvailableRequest dispatchRiderAvailableRequest;
     private DispatchRiderAvailableResponse dispatchRiderAvailableResponse;
+    private DriverAvailableRequest driverAvailableRequest;
+    private DriverAvailableResponse driverAvailableResponse;
 
 
     @BeforeEach
@@ -85,6 +87,8 @@ public class LogisticsServicesTest {
         rideRequest.setPrice("5000");
         rideRequest.setDestinationAddress("312 herbert macaulay road, sabo yaba, lagos");
         rideRequest.setPickupAddress("234 adeniran ogunsaya, surulere, lagos");
+
+        driverAvailableRequest = new DriverAvailableRequest();
 
 
     }
@@ -238,25 +242,43 @@ public class LogisticsServicesTest {
         dispatchRiderAvailableResponse = logisticServices.setDispatchRiderToAvailable(dispatchRiderAvailableRequest);
         assertEquals("Rider is available",dispatchRiderAvailableResponse.getMessage());
         deliveryResponse = logisticServices.dispatchRequest(deliveryRequest);
-        assertEquals(userLoginResponse.getId(), deliveryResponse.getDispatcherActivityResponse().getUserId());
+        assertEquals(userLoginResponse.getId(), deliveryResponse.getActivity().getUserId());
         assertEquals(ActivityStatus.FoundDispatcher, deliveryResponse.getActivity().getActivityStatus());
     }
 
-   // @Test
-   // public void testThatUserCanGetDriverFromRideRequest() {
-       // userRegistrationResponse = logisticServices.registerUser(userRegistrationRequest);
-      //  assertTrue(userRepository.findByEmail(userRegistrationRequest.getEmail()).isPresent());
-     //   assertEquals(userRegistrationRequest.getEmail(), userRegistrationResponse.getEmail());
-//userLoginResponse = logisticServices.loginUser(userLoginRequest);
-        //assertEquals(userLoginRequest.getPhoneNumber(), userLoginResponse.getPhoneNumber());
-       // becomeADriverRequest.setUserId(userLoginResponse.getId());
-       // becomeADriverResponse = logisticServices.registerDriver(becomeADriverRequest);
-//assertNotNull(becomeADriverResponse.getMessage());
-       // rideRequest.setUserId(userLoginResponse.getId());
-       // assertThrows(RideNotAvailableException.class, () -> logisticServices.userBookARide(rideRequest));
+   @Test
+   public void testThatUserCanGetDriverFromRideRequest() {
+       userRegistrationResponse = logisticServices.registerUser(userRegistrationRequest);
+       assertTrue(userRepository.findByEmail(userRegistrationRequest.getEmail()).isPresent());
+      assertEquals(userRegistrationRequest.getEmail(), userRegistrationResponse.getEmail());
+      userLoginResponse = logisticServices.loginUser(userLoginRequest);
+        assertEquals(userLoginRequest.getPhoneNumber(), userLoginResponse.getPhoneNumber());
+       becomeADriverRequest.setUserId(userLoginResponse.getId());
+       becomeADriverResponse = logisticServices.registerDriver(becomeADriverRequest);
+      assertNotNull(becomeADriverResponse.getMessage());
+       rideRequest.setUserId(userLoginResponse.getId());
+       assertThrows(DriverNotAvailableException.class, () -> logisticServices.userBookARide(rideRequest));
 
+   }
 
-  //  }
+    @Test
+    public void testThatUserCanGetDriverFromRideRequestWhenRiderIsAvailable() {
+        userRegistrationResponse = logisticServices.registerUser(userRegistrationRequest);
+        assertTrue(userRepository.findByEmail(userRegistrationRequest.getEmail()).isPresent());
+        assertEquals(userRegistrationRequest.getEmail(), userRegistrationResponse.getEmail());
+        userLoginResponse = logisticServices.loginUser(userLoginRequest);
+        assertEquals(userLoginRequest.getPhoneNumber(), userLoginResponse.getPhoneNumber());
+        becomeADriverRequest.setUserId(userLoginResponse.getId());
+        becomeADriverResponse = logisticServices.registerDriver(becomeADriverRequest);
+        assertNotNull(becomeADriverResponse.getMessage());
+        rideRequest.setUserId(userLoginResponse.getId());
+        assertThrows(DriverNotAvailableException.class, () -> logisticServices.userBookARide(rideRequest));
+
+        driverAvailableRequest.setDriverId(userLoginResponse.getId());
+        driverAvailableResponse = logisticServices.setDriverToAvailable(driverAvailableRequest);
+        assertEquals("Driver is available", driverAvailableResponse.getMessage());
+
+    }
 
 
 
