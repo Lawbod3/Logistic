@@ -140,6 +140,11 @@ public class LogisticServicesImpl implements LogisticServices{
         return new DeliveryResponse(dispatchActivityResponse,dispatchActivity);
     }
 
+    @Override
+    public SetChatToActiveResponse setChatToActive(SetChatToActiveRequest request) {
+        return null;
+    }
+
     private DispatchRider searchForDriverService(DispatchActivity dispatchActivity) {
       return dispatchRiderRepository.findDispatchRiderByAvailable(true)
               .orElseThrow(() -> new DispatcherNotAvailableException("No dispatch rider available at the moment"));

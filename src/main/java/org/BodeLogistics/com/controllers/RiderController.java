@@ -2,9 +2,12 @@ package org.BodeLogistics.com.controllers;
 
 import jakarta.validation.Valid;
 import org.BodeLogistics.com.dto.request.DeliveryRequest;
+import org.BodeLogistics.com.dto.request.DispatchRiderAvailableRequest;
 import org.BodeLogistics.com.dto.response.ApiResponse;
 import org.BodeLogistics.com.dto.response.DeliveryResponse;
+import org.BodeLogistics.com.dto.response.DispatchRiderAvailableResponse;
 import org.BodeLogistics.com.exceptions.DispatcherNotAvailableException;
+import org.BodeLogistics.com.exceptions.RiderDoesNotExistException;
 import org.BodeLogistics.com.service.LogisticServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,6 +38,19 @@ public class RiderController {
         }
 
     }
+
+    @PostMapping("/login/rider-available")
+    public ResponseEntity<?> riderAvailable(@Valid @RequestBody DispatchRiderAvailableRequest request){
+        try{
+            DispatchRiderAvailableResponse response = logisticServices.setDispatchRiderToAvailable(request);
+            return new ResponseEntity<>(new ApiResponse(true, response), HttpStatus.CREATED);
+        }
+        catch(RiderDoesNotExistException e){
+            return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
 
     private ResponseEntity<?> createErrorResponse(Exception e, HttpStatus status) {
         return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), status);

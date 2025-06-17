@@ -88,7 +88,7 @@ public class Map {
 
     public static DispatcherActivityResponse dispatchActivityResponseToRider(DispatchRider rider) {
         DispatcherActivityResponse response = new DispatcherActivityResponse();
-        response.setAvailable(rider.isAvailable());
+        response.setAvailable(true);
         response.setDispatchedActivities(rider.getDispatchedActivities());
         response.setMotorcycleId(rider.getMotorcycleId());
         response.setMotorcycleDescription(rider.getMotorcycleDescription());

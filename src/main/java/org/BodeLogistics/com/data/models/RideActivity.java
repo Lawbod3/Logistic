@@ -6,9 +6,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
-@Document("Activity")
+@Document("RideActivity")
 public class RideActivity {
     @Id
     private String id;
@@ -22,8 +23,9 @@ public class RideActivity {
     private String driverComment;
     private ActivityType activityType = ActivityType.RIDE;
     private ActivityStatus activityStatus = ActivityStatus.InProgress;
-
-
-
+    private boolean chatActive ;
+    private LocalDateTime chatStartedAt;
+    private String lastMessageSenderId;
+    private String lastMessage;
 
 }

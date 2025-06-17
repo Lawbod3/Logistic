@@ -7,6 +7,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Document("DispatchActivity")
@@ -26,5 +27,9 @@ public class DispatchActivity {
     @Setter(AccessLevel.NONE)
     private ActivityType activityType = ActivityType.DISPATCH;
     private ActivityStatus activityStatus = ActivityStatus.InProgress;
+    private boolean chatActive ;
+    private LocalDateTime chatStartedAt;
+    private String lastMessageSenderId;
+    private String lastMessage;
 
 }
