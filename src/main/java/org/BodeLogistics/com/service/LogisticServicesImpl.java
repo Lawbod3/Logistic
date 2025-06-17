@@ -1,10 +1,7 @@
 package org.BodeLogistics.com.service;
 
 import org.BodeLogistics.com.data.models.*;
-import org.BodeLogistics.com.data.repositories.ActivityRepository;
-import org.BodeLogistics.com.data.repositories.DispatchRiderRepository;
-import org.BodeLogistics.com.data.repositories.DriverRepository;
-import org.BodeLogistics.com.data.repositories.UserRepository;
+import org.BodeLogistics.com.data.repositories.*;
 import org.BodeLogistics.com.dto.request.*;
 import org.BodeLogistics.com.dto.response.*;
 import org.BodeLogistics.com.exceptions.*;
@@ -26,6 +23,8 @@ public class LogisticServicesImpl implements LogisticServices{
     DispatchRiderRepository dispatchRiderRepository;
     @Autowired
     ActivityRepository activityRepository;
+    @Autowired
+    ChatMessageRepository chatMessageRepository;
     @Autowired
     StringEncryptor stringEncryptor;
     private static final Logger logger = LoggerFactory.getLogger(LogisticServicesImpl.class);

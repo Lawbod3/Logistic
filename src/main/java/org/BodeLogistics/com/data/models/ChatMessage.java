@@ -13,6 +13,7 @@ public class ChatMessage {
     private String id;
     private String senderId;
     private String receiverId;
+    private String activity;
     private LocalDateTime timestamp;
     private String message;
     private boolean read;
