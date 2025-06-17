@@ -1,8 +1,11 @@
 package org.BodeLogistics.com.controllers;
 
+import org.BodeLogistics.com.dto.request.DriverAvailableRequest;
 import org.BodeLogistics.com.dto.request.RideRequest;
 import org.BodeLogistics.com.dto.response.ApiResponse;
+import org.BodeLogistics.com.dto.response.DriverAvailableResponse;
 import org.BodeLogistics.com.dto.response.RideResponse;
+import org.BodeLogistics.com.exceptions.DriverDoesNotExistException;
 import org.BodeLogistics.com.exceptions.DriverNotAvailableException;
 import org.BodeLogistics.com.service.LogisticServices;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +35,17 @@ public class DriverControllers {
         catch (DriverNotAvailableException e){
             return new ResponseEntity<>(new ApiResponse(false,e.getMessage()), HttpStatus.BAD_REQUEST);
 
+        }
+ }
+
+ @PostMapping("/login/driver-available")
+ public ResponseEntity<?> driverAvailable(@RequestBody DriverAvailableRequest driverAvailableRequest) {
+        try{
+            DriverAvailableResponse response = logisticServices.setDriverToAvailable(driverAvailableRequest);
+            return new ResponseEntity<>(new ApiResponse(true,response), HttpStatus.CREATED);
+        }
+        catch (DriverDoesNotExistException e){
+            return new ResponseEntity<>(new ApiResponse(false,e.getMessage()), HttpStatus.BAD_REQUEST);
         }
  }
 
