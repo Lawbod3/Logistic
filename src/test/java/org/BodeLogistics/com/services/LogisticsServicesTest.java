@@ -29,6 +29,7 @@ public class LogisticsServicesTest {
     @Autowired
     DispatchRiderRepository riderRepository;
 
+
     private UserRegistrationRequest userRegistrationRequest;
     private UserRegistrationResponse userRegistrationResponse;
     private UserLoginRequest userLoginRequest;
@@ -39,6 +40,8 @@ public class LogisticsServicesTest {
     private DispatchRiderRegistrationResponse dispatchRiderRegistrationResponse;
     private DeliveryRequest deliveryRequest;
     private DeliveryResponse deliveryResponse;
+    private RideRequest rideRequest;
+    private RideResponse rideResponse;
     private DispatchRiderAvailableRequest dispatchRiderAvailableRequest;
     private DispatchRiderAvailableResponse dispatchRiderAvailableResponse;
 
@@ -234,6 +237,17 @@ public class LogisticsServicesTest {
         assertEquals(ActivityStatus.FoundDispatcher, deliveryResponse.getActivity().getActivityStatus());
     }
 
+    @Test
+    public void testThatUserCanGetDriverFromRideRequest() {
+        userRegistrationResponse = logisticServices.registerUser(userRegistrationRequest);
+        assertTrue(userRepository.findByEmail(userRegistrationRequest.getEmail()).isPresent());
+        assertEquals(userRegistrationRequest.getEmail(), userRegistrationResponse.getEmail());
+        userLoginResponse = logisticServices.loginUser(userLoginRequest);
+        assertEquals(userLoginRequest.getPhoneNumber(), userLoginResponse.getPhoneNumber());
+        becomeADriverRequest.setUserId(userLoginResponse.getId());
+        becomeADriverResponse = logisticServices.registerDriver(becomeADriverRequest);
+        assertNotNull(becomeADriverResponse.getMessage());
+    }
 
 
 
