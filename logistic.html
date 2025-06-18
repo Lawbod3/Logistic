@@ -335,6 +335,33 @@
       </div>
     </section>
 
+    <!-- Operations Page -->
+    <section id="operationsPage">
+      <div class="form-header">
+        <h1>Set Availability</h1>
+        <nav class="nav-container">
+          <ul>
+            <li>
+              <a href="#" onclick="showSection('dashboard')"
+                >Back to Dashboard</a
+              >
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="form-container">
+        <p id="availability-question"></p>
+
+        <div class="button-group">
+          <button onclick="confirmAvailability(true)">Yes</button>
+          <button onclick="confirmAvailability(false)">No</button>
+        </div>
+
+        <div id="availabilityResponse" class="message"></div>
+      </div>
+    </section>
+
     <script src="logistic.js"></script>
   </body>
 </html>

@@ -234,3 +234,26 @@ ul .become-rider-btn a {
 .becomeRiderPage h1 {
   color: white;
 }
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.button-group button {
+  flex: 1;
+  padding: 0.75rem;
+  background-color: #0055a5;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.button-group button:hover {
+  background-color: #004080;
+}

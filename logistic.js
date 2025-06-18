@@ -10,6 +10,7 @@ function showSection(sectionId) {
     "bookDispatcherPage",
     "becomeDriverPage",
     "becomeRiderPage",
+    "operationsPage",
   ];
   sections.forEach((id) => {
     document.getElementById(id).style.display =
@@ -28,10 +29,60 @@ function showSection(sectionId) {
     if (loginMessage) loginMessage.textContent = "";
   }
 }
+function callLogout() {
+  showSection("home");
+}
 
-// Simulate form handling
+function callSetOperativeActive() {
+  const user = JSON.parse(localStorage.getItem("flashUser"));
+  const question = document.getElementById("availability-question");
+  const responseMessage = document.getElementById("availabilityResponse");
+
+  if (!user || !user.userType) {
+    alert("Only drivers or dispatchers can access this feature.");
+    showSection("dashboard");
+    return;
+  }
+
+  const userType = user.userType?.toUpperCase();
+
+  if (userType === "DRIVER") {
+    question.textContent = "Do you want to turn on Driver mode to available?";
+  } else if (userType === "RIDER") {
+    question.textContent =
+      "Do you want to turn on Dispatcher mode to available?";
+  } else {
+    alert("Only drivers or dispatchers can access this feature.");
+    showSection("dashboard");
+    return;
+  }
+
+  responseMessage.textContent = "";
+  responseMessage.style.color = "black";
+
+  showSection("operationsPage");
+}
+
+function callBookRide() {
+  showSection("bookRidePage");
+}
+
+function callBookDispatcher() {
+  showSection("bookDispatcherPage");
+}
+
+function callBecomeRider() {
+  showSection("becomeRiderPage");
+}
+
+function callBecomeDriver() {
+  showSection("becomeDriverPage");
+}
+
 const registerForm = document.getElementById("register-form");
 const loginForm = document.getElementById("login-form");
+const driverForm = document.getElementById("become-driver-form");
+const riderForm = document.getElementById("rider-form");
 
 if (registerForm) {
   registerForm.addEventListener("submit", function (e) {
@@ -119,28 +170,4 @@ if (loginForm) {
         responseMessage.style.color = "red";
       });
   });
-}
-
-function callLogout() {
-  showSection("home");
-}
-
-function callSetOperativeActive() {
-  alert("Operative set as active.");
-}
-
-function callBookRide() {
-  showSection("bookRidePage");
-}
-
-function callBookDispatcher() {
-  showSection("bookDispatcherPage");
-}
-
-function callBecomeRider() {
-  showSection("becomeRiderPage");
-}
-
-function callBecomeDriver() {
-  showSection("becomeDriverPage");
 }
