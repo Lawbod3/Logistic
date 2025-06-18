@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flash Logistics</title>
+    <link rel="stylesheet" href="logistic.css" />
+  </head>
+  <body>
+    <!-- Homepage -->
+    <section id="home">
+      <div class="homepage-header">
+        <h1>Flash Logistics</h1>
+        <nav class="nav-container">
+          <ul>
+            <li><a href="#" onclick="showSection('home')">Home</a></li>
+            <li><a href="#" onclick="showSection('register')">Register</a></li>
+            <li><a href="#" onclick="showSection('login')">Login</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="homepage-content">
+        <h2>Speed is our selling point</h2>
+        <p>Your trusted partner for fast and reliable logistics services.</p>
+        <a href="#" onclick="showSection('register')" class="cta-button"
+          >Get Started</a
+        >
+      </div>
+    </section>
+
+    <!-- Register Page -->
+    <section id="register">
+      <div class="form-header">
+        <h1>Register with Flash</h1>
+        <nav class="nav-container">
+          <ul>
+            <li><a href="#" onclick="showSection('home')">Home</a></li>
+            <li><a href="#" onclick="showSection('login')">Login</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="form-container">
+        <form id="register-form">
+          <label for="first-name">First Name</label>
+          <input type="text" id="first-name" name="firstName" required />
+
+          <label for="last-name">Last Name</label>
+          <input type="text" id="last-name" name="lastName" required />
+
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required />
+
+          <label for="phone">Phone Number</label>
+          <input type="tel" id="phone" name="phoneNumber" required />
+
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required />
+
+          <label for="home-address">Home Address</label>
+          <input type="text" id="home-address" name="homeAddress" />
+
+          <button type="submit">Register</button>
+        </form>
+
+        <p>
+          Already have an account?
+          <a href="#" onclick="showSection('login')">Login here</a>
+        </p>
+        <div id="regMessage" class="message"></div>
+      </div>
+    </section>
+
+    <!-- Login Page -->
+    <section id="login">
+      <div class="form-header">
+        <h1>Login to Flash</h1>
+        <nav class="nav-container">
+          <ul>
+            <li><a href="#" onclick="showSection('home')">Home</a></li>
+            <li><a href="#" onclick="showSection('register')">Register</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="form-container">
+        <form id="login-form">
+          <label for="login-phone">Phone Number</label>
+          <input type="tel" id="login-phone" name="phoneNumber" required />
+
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" name="password" required />
+
+          <button type="submit">Login</button>
+        </form>
+        <p>
+          Don't have an account?
+          <a href="#" onclick="showSection('register')">Register here</a>
+        </p>
+        <div id="loginMessage" class="message"></div>
+      </div>
+    </section>
+
+    <!-- Dashboard Page -->
+    <section id="dashboard">
+      <div class="dashboard-header">
+        <nav class="nav-container">
+          <ul>
+            <li>
+              <button class="nav-btn" onclick="showSection('home')">
+                Home
+              </button>
+            </li>
+            <li>
+              <button class="nav-btn" onclick="callLogout()">Logout</button>
+            </li>
+            <li>
+              <button class="nav-btn" onclick="callSetOperativeActive()">
+                Operations
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+      <div class="dashboard-content">
+        <h2>Welcome to Your Dashboard</h2>
+        <p>Book rides or dispatch services with Flash Logistics.</p>
+        <div class="dashboard-actions">
+          <button onclick="callBookRide()" class="dashboard-button">
+            Book a Ride
+          </button>
+          <button onclick="callBookDispatcher()" class="dashboard-button">
+            Book a Dispatcher
+          </button>
+        </div>
+        <button onclick="callBecomeRider()" class="rider-button">
+          Become a Rider
+        </button>
+        <button onclick="callBecomeDriver()" class="driver-button">
+          Become a Driver
+        </button>
+      </div>
+    </section>
+
+    <!-- Book a Ride Section -->
+    <section id="bookRidePage">
+      <div class="form-header">
+        <h1>Book a Ride</h1>
+        <nav class="nav-container">
+          <ul>
+            <button class="book-ride-btn">
+              <a href="#" onclick="showSection('dashboard')"
+                >Back to Dashboard</a
+              >
+            </button>
+          </ul>
+        </nav>
+      </div>
+      <div class="form-container">
+        <form id="book-ride-form">
+          <label for="pickup-address">Pickup Address</label>
+          <input
+            type="text"
+            id="pickup-address"
+            name="pickupAddress"
+            required
+          />
+
+          <label for="destination-address">Destination Address</label>
+          <input
+            type="text"
+            id="destination-address"
+            name="destinationAddress"
+            required
+          />
+
+          <label for="ride-price">Price</label>
+          <input
+            type="text"
+            id="ride-price"
+            name="price"
+            pattern="^[0-9](\.[0-9]{1,2})?$"
+            required
+          />
+
+          <button type="submit">Submit Ride Request</button>
+        </form>
+        <div id="rideMessage" class="message"></div>
+      </div>
+    </section>
+
+    <!-- Book a Dispatcher Section -->
+    <section id="bookDispatcherPage">
+      <div class="form-header">
+        <h1>Book a Dispatcher</h1>
+        <nav class="nav-container">
+          <ul>
+            <button class="book-dispatcher-btn">
+              <a href="#" onclick="showSection('dashboard')"
+                >Back to Dashboard</a
+              >
+            </button>
+          </ul>
+        </nav>
+      </div>
+      <div class="form-container">
+        <form id="book-dispatcher-form">
+          <label for="receiver-name">Receiver Name</label>
+          <input type="text" id="receiver-name" name="receiverName" required />
+
+          <label for="receiver-phone">Receiver Phone Number</label>
+          <input
+            type="tel"
+            id="receiver-phone"
+            name="receiverPhoneNumber"
+            required
+          />
+
+          <label for="sender-phone">Sender Phone Number</label>
+          <input
+            type="tel"
+            id="sender-phone"
+            name="senderPhoneNumber"
+            required
+          />
+
+          <label for="pickup-address-dispatcher">Pickup Address</label>
+          <input
+            type="text"
+            id="pickup-address-dispatcher"
+            name="pickUpAddress"
+            required
+          />
+
+          <label for="delivery-address">Delivery Address</label>
+          <input
+            type="text"
+            id="delivery-address"
+            name="deliveryAddress"
+            required
+          />
+
+          <label for="dispatcher-price">Price</label>
+          <input
+            type="text"
+            id="dispatcher-price"
+            name="price"
+            pattern="^\\d+(\\.\\d{1,2})?$"
+            required
+          />
+
+          <button type="submit">Submit Dispatch Request</button>
+        </form>
+        <div id="dispatcherMessage" class="message"></div>
+      </div>
+    </section>
+
+    <!-- Become a Driver Section -->
+    <section id="becomeDriverPage">
+      <div class="form-header">
+        <h1>Become a Driver</h1>
+        <nav class="nav-container">
+          <ul>
+            <button class="become-driver-btn">
+              <a href="#" onclick="showSection('dashboard')"
+                >Back to Dashboard</a
+              >
+            </button>
+          </ul>
+        </nav>
+      </div>
+      <div class="form-container">
+        <form id="become-driver-form">
+          <label for="drivers-license">Driver’s License Number</label>
+          <input
+            type="text"
+            id="drivers-license"
+            name="driversLicenseNumber"
+            required
+          />
+
+          <label for="vehicle-id">Vehicle ID</label>
+          <input type="text" id="vehicle-id" name="vehicleId" required />
+
+          <label for="vehicle-description">Vehicle Description</label>
+          <input
+            type="text"
+            id="vehicle-description"
+            name="vehicleDescription"
+            required
+          />
+
+          <button type="submit">Register as Driver</button>
+        </form>
+        <div id="driverMessage" class="message"></div>
+      </div>
+    </section>
+
+    <!-- Become a Rider Section -->
+    <section id="becomeRiderPage">
+      <div class="form-header">
+        <h1>Become a Rider</h1>
+        <nav class="nav-container">
+          <ul>
+            <button class="become-rider-btn">
+              <a href="#" onclick="showSection('dashboard')"
+                >Back to Dashboard</a
+              >
+            </button>
+          </ul>
+        </nav>
+      </div>
+      <div class="form-container">
+        <form id="become-rider-form">
+          <label for="riders-license">Rider’s License Number</label>
+          <input
+            type="text"
+            id="riders-license"
+            name="ridersLicenseNumber"
+            required
+          />
+
+          <label for="motorcycle-id">Motorcycle ID</label>
+          <input type="text" id="motorcycle-id" name="motorcycleId" required />
+
+          <label for="motorcycle-description">Motorcycle Description</label>
+          <input
+            type="text"
+            id="motorcycle-description"
+            name="motorcycleDescription"
+            required
+          />
+
+          <button type="submit">Register as Rider</button>
+        </form>
+        <div id="riderMessage" class="message"></div>
+      </div>
+    </section>
+
+    <script src="logistic.js"></script>
+  </body>
+</html>
