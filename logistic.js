@@ -79,6 +79,16 @@ function callBecomeDriver() {
   showSection("becomeDriverPage");
 }
 
+function checkNotification() {
+  const user = JSON.parse(localStorage.getItem("flashUser"));
+
+  if (user?.data?.notification !== null) {
+    alert("📢 Notification: " + user.data.notification);
+  } else {
+    alert("🔕 You have no new notifications.");
+  }
+}
+
 const registerForm = document.getElementById("register-form");
 const loginForm = document.getElementById("login-form");
 const driverForm = document.getElementById("become-driver-form");
