@@ -16,6 +16,7 @@ public class UserLoginResponse {
     private String lastName;
     private String homeAddress;
     private UserType userType;
+    private boolean available;
     private Notification notification;
     private List<RideActivity> activities;
 }
