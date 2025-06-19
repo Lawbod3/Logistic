@@ -12,6 +12,7 @@ public class UserRegistrationRequest {
     @NotBlank
     private String email;
     @NotBlank
+    @Pattern(regexp = "^[0-9]+$", message = "Please amke sure it only digit")
     private String phoneNumber;
     @NotBlank
     private String password;

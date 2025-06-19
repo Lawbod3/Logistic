@@ -24,5 +24,6 @@ public class Driver  {
     private String vehicleId;
     private String vehicleDescription;
     private boolean available;
+    private Notification notification;
     private List<RideActivity> rideActivities;
 }

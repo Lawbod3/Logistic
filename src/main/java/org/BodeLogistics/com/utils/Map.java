@@ -5,10 +5,7 @@ import org.BodeLogistics.com.dto.request.DeliveryRequest;
 import org.BodeLogistics.com.dto.request.DispatchRiderRegistrationRequest;
 import org.BodeLogistics.com.dto.request.DriverRegistrationRequest;
 import org.BodeLogistics.com.dto.request.RideRequest;
-import org.BodeLogistics.com.dto.response.DispatcherProfileResponse;
-import org.BodeLogistics.com.dto.response.DriverProfileResponse;
-import org.BodeLogistics.com.dto.response.UserLoginResponse;
-import org.BodeLogistics.com.dto.response.UserRegistrationResponse;
+import org.BodeLogistics.com.dto.response.*;
 
 import java.time.LocalDate;
 
@@ -32,6 +29,7 @@ public class Map {
         response.setHomeAddress(user.getHomeAddress());
         response.setId(user.getId());
         response.setPhoneNumber(user.getPhoneNumber());
+        response.setUserType(user.getUserType());
         return response;
 
     }
@@ -130,5 +128,13 @@ public class Map {
     public static void driverToActivity(Driver foundDriver, RideActivity activity) {
         activity.setDriverId(foundDriver.getId());
         activity.setActivityStatus(ActivityStatus.FoundDriver);
+    }
+
+    public static DriverNotificationResponse driverNotificationResponseToRideActivity(RideActivity activity) {
+        DriverNotificationResponse response = new DriverNotificationResponse();
+        response.setDropOffLocation(activity.getDestinationAddress());
+        response.setPickUpLocation(activity.getPickUpAddress());
+        response.setPrice(activity.getPrice());
+        return response;
     }
 }

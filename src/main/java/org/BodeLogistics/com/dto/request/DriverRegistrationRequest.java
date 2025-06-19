@@ -5,12 +5,12 @@ import lombok.Data;
 
 @Data
 public class DriverRegistrationRequest {
-    @NotBlank
+    @NotBlank(message = "license must not be blank")
     private String driversLicenseNumber;
-    @NotBlank
+    @NotBlank(message = "UserId must not be blank")
     private String userId;
-    @NotBlank
+    @NotBlank(message = "vehicle Id must not be blank")
     private String vehicleId;
-    @NotBlank
+    @NotBlank(message = "description must not be bklank")
     private String vehicleDescription;
 }

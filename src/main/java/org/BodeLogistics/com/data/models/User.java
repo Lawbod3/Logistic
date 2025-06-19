@@ -10,7 +10,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
-@Document("User")
+@Document("UserLogistics")
 public class User {
     @Id
     private String id;
@@ -20,6 +20,7 @@ public class User {
     private String lastName;
     private String homeAddress;
     private String password;
+    private Notification notification ;
     private UserType userType = UserType.ORDINARY;
 
 

@@ -169,12 +169,19 @@ public class LogisticServicesImpl implements LogisticServices{
 
     @Override
     public RideResponse userBookARide(RideRequest rideRequest) {
+        User user = userRepository.findById(rideRequest.getUserId())
+                .orElseThrow(() -> new UserDoesNotExistException("User Does Not Exist"));
         RideActivity activity = Map.rideActivityToRideRequest(rideRequest);
         Driver foundDriver = searchForDriverService();
         DriverProfileResponse driverProfileResponse = Map.dispatchActivityResponseToDriver(foundDriver);
         Map.driverToActivity(foundDriver,activity);
         activity = activityRepository.save(activity);
-        return new RideResponse(driverProfileResponse, activity);
+        driverRepository.save(foundDriver);
+        foundDriver.setNotification(new Notification(Map.driverNotificationResponseToRideActivity(activity)));
+        RideResponse rideResponse = new RideResponse(driverProfileResponse, activity);
+        user.setNotification(new Notification(rideResponse));
+        return rideResponse;
+
 
     }
 

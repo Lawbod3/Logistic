@@ -23,5 +23,6 @@ public class DispatchRider {
     private String motorcycleId;
     private String motorcycleDescription;
     private boolean available;
+    private Notification notification;
     private List<DispatchActivity> dispatchedActivities;
 }

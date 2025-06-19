@@ -7,6 +7,7 @@ import org.BodeLogistics.com.dto.response.DriverAvailableResponse;
 import org.BodeLogistics.com.dto.response.RideResponse;
 import org.BodeLogistics.com.exceptions.DriverDoesNotExistException;
 import org.BodeLogistics.com.exceptions.DriverNotAvailableException;
+import org.BodeLogistics.com.exceptions.UserDoesNotExistException;
 import org.BodeLogistics.com.service.LogisticServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,7 +33,7 @@ public class DriverControllers {
             RideResponse response = logisticServices.userBookARide(rideRequest);
             return new ResponseEntity<>(new ApiResponse(true,response), HttpStatus.CREATED);
         }
-        catch (DriverNotAvailableException e){
+        catch (DriverNotAvailableException | UserDoesNotExistException e){
             return new ResponseEntity<>(new ApiResponse(false,e.getMessage()), HttpStatus.BAD_REQUEST);
 
         }
