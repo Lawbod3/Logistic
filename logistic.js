@@ -85,6 +85,8 @@ const driverForm = document.getElementById("become-driver-form");
 const riderForm = document.getElementById("become-rider-form");
 const bookRide = document.getElementById("book-ride-form");
 const bookDispatcher = document.getElementById("book-dispatcher-form");
+const confirmAvailabilityYes = document.getElementById("confirmYes");
+const confirmAvailabilityNo = document.getElementById("confirmNo");
 
 if (registerForm) {
   registerForm.addEventListener("submit", function (e) {
@@ -216,7 +218,7 @@ if (driverForm) {
         if (response.ok) {
           reponseMessage.textContent = "Driver registration successful!";
           reponseMessage.style.color = "green";
-          showSection("dashboard");
+          showSection("login");
         } else {
           reponseMessage.textContent =
             data.data || "Driver registration failed. Please try again.";
@@ -275,7 +277,7 @@ if (riderForm) {
         if (response.ok) {
           reponseMessage.textContent = "Dispatcher registration successful!";
           reponseMessage.style.color = "green";
-          showSection("dashboard");
+          showSection("login");
         } else {
           reponseMessage.textContent =
             data.data || "Dispatcher registration failed. Please try again.";
@@ -321,8 +323,7 @@ if (bookRide) {
         console.log(data);
         const reponseMessage = document.getElementById("rideMessage");
         if (response.ok) {
-          reponseMessage.textContent = "Ride request successful!";
-          reponseMessage.style.color = "green";
+          alert("Driver found kindy confirm the Ride  activity");
           showSection("dashboard");
         } else {
           if (data.data === "No Driver available at the moment") {
@@ -340,5 +341,140 @@ if (bookRide) {
         responseMessage.textContent = "An error occurred during ride request.";
         responseMessage.style.color = "red";
       });
+  });
+}
+
+if (bookDispatcher) {
+  bookDispatcher.addEventListener("submit", function (event) {
+    event.preventDefault();
+    const user = JSON.parse(localStorage.getItem("flashUser"));
+    const userId = user.data.id;
+
+    const receiverPhoneNumber = document.getElementById("receiver-phone").value;
+    const receiverName = document.getElementById("receiver-name").value;
+    const senderPhoneNumber = document.getElementById("sender-phone").value;
+    const pickUpAddress = document.getElementById(
+      "pickup-address-dispatcher"
+    ).value;
+    const deliveryAddress = document.getElementById("delivery-address").value;
+    const price = document.getElementById("dispatcher-price").value;
+
+    fetch(" http://localhost:8080/api/logistics/rider/login/dispatch-request", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        receiverPhoneNumber: receiverPhoneNumber,
+        receiverName: receiverName,
+        senderPhoneNumber: senderPhoneNumber,
+        pickUpAddress: pickUpAddress,
+        deliveryAddress: deliveryAddress,
+        userId: userId,
+        price: price,
+      }),
+    })
+      .then(async (response) => {
+        const data = await response.json();
+        console.log(data);
+        const reponseMessage = document.getElementById("dispatcherMessage");
+        if (response.ok) {
+          alert("Dispatcher found kindly confirm the activity");
+          showSection("dashboard");
+        } else {
+          if (data.data === "No dispatch rider available at the moment") {
+            alert(data.data);
+            showSection("dashboard");
+          }
+          reponseMessage.textContent =
+            data.data || "Dispatcher request failed. Please try again.";
+          reponseMessage.style.color = "red";
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        const responseMessage = document.getElementById("dispatcherMessage");
+        responseMessage.textContent =
+          "An error occurred during dispatcher request.";
+        responseMessage.style.color = "red";
+      });
+  });
+}
+
+if (confirmAvailabilityYes) {
+  confirmAvailabilityYes.addEventListener("click", function (event) {
+    event.preventDefault();
+    const user = JSON.parse(localStorage.getItem("flashUser"));
+    const userType = user.data.userType?.toUpperCase();
+    const userId = user.data.id;
+
+    if (userType === "DRIVER") {
+      fetch(
+        "http://localhost:8080/api/logistics/driver/login/driver-available",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            driverId: userId,
+          }),
+        }
+      )
+        .then(async (response) => {
+          const data = await response.json();
+          console.log(data);
+          const reponseMessage = document.getElementById("availabilityMessage");
+          if (response.ok) {
+            alert("Availability confirmed!");
+            showSection("dashboard");
+          } else {
+            reponseMessage.textContent =
+              data.data ||
+              "Availability confirmation failed. Please try again.";
+            reponseMessage.style.color = "red";
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          const responseMessage = document.getElementById(
+            "availabilityMessage"
+          );
+          responseMessage.textContent =
+            "An error occurred during availability confirmation.";
+          responseMessage.style.color = "red";
+        });
+    }
+    if (userType === "DISPATCHER") {
+      fetch("http://localhost:8080/api/logistics/rider/login/rider-available", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          riderId: userId,
+        }),
+      })
+        .then(async (response) => {
+          const data = await response.json();
+          console.log(data);
+          const reponseMessage = document.getElementById("availabilityMessage");
+          if (response.ok) {
+            alert("Availability confirmed!");
+            showSection("dashboard");
+          } else {
+            reponseMessage.textContent =
+              data.data ||
+              "Availability confirmation failed. Please try again.";
+            reponseMessage.style.color = "red";
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          const responseMessage = document.getElementById(
+            "availabilityMessage"
+          );
+        });
+    }
   });
 }

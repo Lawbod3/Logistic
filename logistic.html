@@ -233,13 +233,7 @@
           />
 
           <label for="dispatcher-price">Price</label>
-          <input
-            type="text"
-            id="dispatcher-price"
-            name="price"
-            pattern="^\\d+(\\.\\d{1,2})?$"
-            required
-          />
+          <input type="text" id="dispatcher-price" name="price" required />
 
           <button type="submit">Submit Dispatch Request</button>
         </form>
@@ -348,8 +342,12 @@
         <p id="availability-question"></p>
 
         <div class="button-group">
-          <button onclick="confirmAvailability(true)">Yes</button>
-          <button onclick="confirmAvailability(false)">No</button>
+          <button id="confirmYes" onclick="confirmAvailability(true)">
+            Yes
+          </button>
+          <button id="confirmNo" onclick="confirmAvailability(false)">
+            No
+          </button>
         </div>
 
         <div id="availabilityResponse" class="message"></div>
