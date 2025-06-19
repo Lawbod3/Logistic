@@ -131,11 +131,5 @@ public class Map {
         activity.setActivityStatus(ActivityStatus.FoundDriver);
     }
 
-    public static DriverNotificationResponse driverNotificationResponseToRideActivity(RideActivity activity) {
-        DriverNotificationResponse response = new DriverNotificationResponse();
-        response.setDropOffLocation(activity.getDestinationAddress());
-        response.setPickUpLocation(activity.getPickUpAddress());
-        response.setPrice(activity.getPrice());
-        return response;
-    }
+
 }

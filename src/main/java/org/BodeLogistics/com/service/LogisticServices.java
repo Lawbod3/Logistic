@@ -15,6 +15,7 @@ public interface LogisticServices {
 
     UserBookARideForSomeoneResponse userBookARideForSomeone(UserBookARideForSomeoneRequest userBookARideRequest);
     RideResponse userBookARide(RideRequest rideRequest);
+    ResponseNotificationMessage clearNotification(RequestNotificationMessage notificationMessage);
 
 
 

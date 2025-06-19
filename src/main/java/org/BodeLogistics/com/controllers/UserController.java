@@ -1,6 +1,8 @@
 package org.BodeLogistics.com.controllers;
 
 import jakarta.validation.Valid;
+import org.BodeLogistics.com.data.models.User;
+import org.BodeLogistics.com.data.repositories.UserRepository;
 import org.BodeLogistics.com.dto.request.*;
 import org.BodeLogistics.com.dto.response.*;
 import org.BodeLogistics.com.exceptions.*;
@@ -12,6 +14,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 
 
 @CrossOrigin(origins = "*")
@@ -20,6 +23,9 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     @Autowired
     LogisticServices logisticServices;
+
+    @Autowired
+    UserRepository userRepository;
 
     @GetMapping("/test")
     public String test() {
@@ -68,6 +74,18 @@ public class UserController {
         catch(UserDoesNotExistException | DispatcherExistException | MotorcycleAuthenticationException e){
             return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @PostMapping("/clear-notification")
+    public ResponseEntity<?> clearNotification(@RequestBody RequestNotificationMessage request) {
+        try {
+            ResponseNotificationMessage response = logisticServices.clearNotification(request);
+            return new ResponseEntity<>(new ApiResponse(true, response), HttpStatus.OK);
+        }
+        catch(UserDoesNotExistException e){
+            return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+
     }
 
 

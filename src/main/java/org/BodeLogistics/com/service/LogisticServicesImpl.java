@@ -176,12 +176,12 @@ public class LogisticServicesImpl implements LogisticServices{
         DriverProfileResponse driverProfileResponse = Map.dispatchActivityResponseToDriver(foundDriver);
         Map.driverToActivity(foundDriver,activity);
         activity = activityRepository.save(activity);
+        foundDriver.setNotification(new Notification(activity));
         driverRepository.save(foundDriver);
-        foundDriver.setNotification(new Notification(Map.driverNotificationResponseToRideActivity(activity)));
         RideResponse rideResponse = new RideResponse(driverProfileResponse, activity);
         user.setNotification(new Notification(rideResponse));
+        userRepository.save(user);
         return rideResponse;
-
 
     }
 
@@ -189,6 +189,20 @@ public class LogisticServicesImpl implements LogisticServices{
         return driverRepository.findRideByAvailable(true)
                 .orElseThrow(() -> new DriverNotAvailableException("No Driver available at the moment"));
     }
+
+    @Override
+    public ResponseNotificationMessage clearNotification(RequestNotificationMessage request) {
+        ResponseNotificationMessage response = new ResponseNotificationMessage();
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new UserDoesNotExistException("User Does Not Exist"));
+        user.setNotification(null);
+        userRepository.save(user);
+        response.setSuccess(true);
+        return  response;
+
+    }
+
+
 
 
 
