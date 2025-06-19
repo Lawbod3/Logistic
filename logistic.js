@@ -83,6 +83,7 @@ const registerForm = document.getElementById("register-form");
 const loginForm = document.getElementById("login-form");
 const driverForm = document.getElementById("become-driver-form");
 const riderForm = document.getElementById("become-rider-form");
+const bookRide = document.getElementById("book-ride-form");
 
 if (registerForm) {
   registerForm.addEventListener("submit", function (e) {
@@ -285,6 +286,57 @@ if (riderForm) {
         const responseMessage = document.getElementById("riderMessage");
         responseMessage.textContent =
           "An error occurred during dispatcher registration.";
+        responseMessage.style.color = "red";
+      });
+  });
+}
+
+if (bookRide) {
+  bookRide.addEventListener("submit", function (event) {
+    event.preventDefault();
+    const user = JSON.parse(localStorage.getItem("flashUser"));
+    const userId = user.data.id;
+
+    const pickUpAddress = document.getElementById("pickup-address").value;
+    const destinationAddress = document.getElementById(
+      "destination-address"
+    ).value;
+    const price = document.getElementById("ride-price").value;
+
+    fetch("http://localhost:8080/api/logistics/driver/login/ride-request", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: userId,
+        destinationAddres: destinationAddress,
+        pickupAddress: pickUpAddress,
+        price: price,
+      }),
+    })
+      .then(async (response) => {
+        const data = await response.json();
+        console.log(data);
+        const reponseMessage = document.getElementById("rideMessage");
+        if (response.ok) {
+          reponseMessage.textContent = "Ride request successful!";
+          reponseMessage.style.color = "green";
+          showSection("dashboard");
+        } else {
+          if (data.data === "No Driver available at the moment") {
+            alert(data.data);
+            showSection("dashboard");
+          }
+          reponseMessage.textContent =
+            data.data || "Ride request failed. Please try again.";
+          reponseMessage.style.color = "red";
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        const responseMessage = document.getElementById("rideMessage");
+        responseMessage.textContent = "An error occurred during ride request.";
         responseMessage.style.color = "red";
       });
   });
