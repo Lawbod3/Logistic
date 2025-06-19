@@ -38,17 +38,17 @@ function callSetOperativeActive() {
   const question = document.getElementById("availability-question");
   const responseMessage = document.getElementById("availabilityResponse");
 
-  if (!user || !user.userType) {
+  const userType = user.data.userType?.toUpperCase();
+
+  if (!user.data || !user.data.userType) {
     alert("Only drivers or dispatchers can access this feature.");
     showSection("dashboard");
     return;
   }
 
-  const userType = user.userType?.toUpperCase();
-
   if (userType === "DRIVER") {
     question.textContent = "Do you want to turn on Driver mode to available?";
-  } else if (userType === "RIDER") {
+  } else if (userType === "DISPATCHER") {
     question.textContent =
       "Do you want to turn on Dispatcher mode to available?";
   } else {
@@ -82,7 +82,7 @@ function callBecomeDriver() {
 const registerForm = document.getElementById("register-form");
 const loginForm = document.getElementById("login-form");
 const driverForm = document.getElementById("become-driver-form");
-const riderForm = document.getElementById("rider-form");
+const riderForm = document.getElementById("become-rider-form");
 
 if (registerForm) {
   registerForm.addEventListener("submit", function (e) {
@@ -167,6 +167,124 @@ if (loginForm) {
         console.error("Error:", error);
         const responseMessage = document.getElementById("loginMessage");
         responseMessage.textContent = "An error occurred during login.";
+        responseMessage.style.color = "red";
+      });
+  });
+}
+
+if (driverForm) {
+  driverForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+    const user = JSON.parse(localStorage.getItem("flashUser"));
+    const userId = user.data.id;
+
+    const userType = user.data.userType?.toUpperCase();
+
+    if (userType === "DRIVER" || userType === "RIDER") {
+      alert("You are already a driver!");
+      showSection("dashboard");
+      return;
+    }
+
+    const driversLicense = document.getElementById("drivers-license").value;
+    const vehicleId = document.getElementById("vehicle-id").value;
+    const vehicleDescription = document.getElementById(
+      "vehicle-description"
+    ).value;
+
+    fetch(
+      "http://localhost:8080/api/logistics/user/login/driver-registration",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          driversLicenseNumber: driversLicense,
+          userId: userId,
+          vehicleId: vehicleId,
+          vehicleDescription: vehicleDescription,
+        }),
+      }
+    )
+      .then(async (response) => {
+        const data = await response.json();
+        console.log(data);
+        const reponseMessage = document.getElementById("driverMessage");
+        if (response.ok) {
+          reponseMessage.textContent = "Driver registration successful!";
+          reponseMessage.style.color = "green";
+          showSection("dashboard");
+        } else {
+          reponseMessage.textContent =
+            data.data || "Driver registration failed. Please try again.";
+          reponseMessage.style.color = "red";
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        const responseMessage = document.getElementById("driverMessage");
+        responseMessage.textContent =
+          "An error occurred during driver registration.";
+        responseMessage.style.color = "red";
+      });
+  });
+}
+
+if (riderForm) {
+  riderForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+    const user = JSON.parse(localStorage.getItem("flashUser"));
+    const userId = user.data.id;
+
+    const userType = user.data.userType?.toUpperCase();
+
+    if (userType === "RIDER" || userType === "DRIVER") {
+      alert("You are already a rider!");
+      showSection("dashboard");
+      return;
+    }
+
+    const ridersLicense = document.getElementById("riders-license").value;
+    const motorcycleId = document.getElementById("motorcycle-id").value;
+    const motorcycleDescription = document.getElementById(
+      "motorcycle-description"
+    ).value;
+
+    fetch(
+      "http://localhost:8080/api/logistics/user/login/dispatcher-registration",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ridersLicenseNumber: ridersLicense,
+          userId: userId,
+          motorcycleId: motorcycleId,
+          motorcycleDescription: motorcycleDescription,
+        }),
+      }
+    )
+      .then(async (response) => {
+        const data = await response.json();
+        console.log(data);
+        const reponseMessage = document.getElementById("riderMessage");
+        if (response.ok) {
+          reponseMessage.textContent = "Dispatcher registration successful!";
+          reponseMessage.style.color = "green";
+          showSection("dashboard");
+        } else {
+          reponseMessage.textContent =
+            data.data || "Dispatcher registration failed. Please try again.";
+          reponseMessage.style.color = "red";
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        const responseMessage = document.getElementById("riderMessage");
+        responseMessage.textContent =
+          "An error occurred during dispatcher registration.";
         responseMessage.style.color = "red";
       });
   });
