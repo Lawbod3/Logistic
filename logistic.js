@@ -84,6 +84,7 @@ const loginForm = document.getElementById("login-form");
 const driverForm = document.getElementById("become-driver-form");
 const riderForm = document.getElementById("become-rider-form");
 const bookRide = document.getElementById("book-ride-form");
+const bookDispatcher = document.getElementById("book-dispatcher-form");
 
 if (registerForm) {
   registerForm.addEventListener("submit", function (e) {
