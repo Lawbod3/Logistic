@@ -16,6 +16,20 @@ function showSection(sectionId) {
     document.getElementById(id).style.display =
       id === sectionId ? "block" : "none";
   });
+  if (sectionId === "dashboard") {
+    const user = JSON.parse(localStorage.getItem("flashUser"));
+    const notificationBtn = document.getElementById("notification-btn");
+    if (
+      notificationBtn &&
+      user &&
+      ["DRIVER", "DISPATCHER"].includes(user.data.userType.toUpperCase())
+    ) {
+      notificationBtn.style.display = "block";
+      updateNotificationButton();
+    } else if (notificationBtn) {
+      notificationBtn.style.display = "none";
+    }
+  }
   if (sectionId !== "register") {
     const registerForm = document.getElementById("register-form");
     if (registerForm) registerForm.reset();
@@ -77,16 +91,6 @@ function callBecomeRider() {
 
 function callBecomeDriver() {
   showSection("becomeDriverPage");
-}
-
-function checkNotification() {
-  const user = JSON.parse(localStorage.getItem("flashUser"));
-
-  if (user?.data?.notification !== null) {
-    alert("📢 Notification: " + user.data.notification);
-  } else {
-    alert("🔕 You have no new notifications.");
-  }
 }
 
 const registerForm = document.getElementById("register-form");
@@ -167,10 +171,14 @@ if (loginForm) {
         console.log(data);
         const reponseMessage = document.getElementById("loginMessage");
         if (response.ok) {
-          reponseMessage.textContent = "Login successful!";
-          reponseMessage.style.color = "green";
           localStorage.setItem("flashUser", JSON.stringify(data));
           showSection("dashboard");
+          if (
+            ["DRIVER", "DISPATCHER"].includes(data.data.userType.toUpperCase())
+          ) {
+            checkNotification();
+            updateNotificationButton();
+          }
         } else {
           reponseMessage.textContent =
             data.data || "Login failed. Please try again.";
@@ -323,7 +331,7 @@ if (bookRide) {
       },
       body: JSON.stringify({
         userId: userId,
-        destinationAddres: destinationAddress,
+        destinationAddress: destinationAddress,
         pickupAddress: pickUpAddress,
         price: price,
       }),
@@ -487,4 +495,82 @@ if (confirmAvailabilityYes) {
         });
     }
   });
+}
+
+if (confirmAvailabilityNo) {
+  confirmAvailabilityNo.addEventListener("click", function (event) {
+    event.preventDefault();
+    alert("Availability not confirmed!");
+    showSection("dashboard");
+  });
+}
+
+function checkNotification() {
+  const user = JSON.parse(localStorage.getItem("flashUser"));
+  if (
+    !user ||
+    !["DRIVER", "DISPATCHER"].includes(user.data.userType.toUpperCase())
+  ) {
+    alert("Only drivers and dispatchers can check notifications.");
+    showSection("dashboard");
+    return;
+  }
+  if (user?.data?.notification?.message) {
+    const notification = user.data.notification;
+    let message;
+    if (user.data.userType.toUpperCase() === "DRIVER") {
+      message =
+        `📢 New Ride Assigned:\n` +
+        `Ride ID: ${notification.rideId}\n` +
+        `Pickup: ${notification.pickupAddress}\n` +
+        `Destination: ${notification.destinationAddress}\n` +
+        `Price: $${notification.price}\n` +
+        `Message: ${notification.message}`;
+    } else {
+      message =
+        `📢 Ride Booked:\n` +
+        `Ride ID: ${notification.rideId}\n` +
+        `Pickup: ${notification.pickupAddress}\n` +
+        `Destination: ${notification.destinationAddress}\n` +
+        `Price: $${notification.price}\n` +
+        `Message: ${notification.message}`;
+    }
+    alert(message);
+    fetch("http://localhost:8080/api/logistics/user/clear-notification", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userId: user.data.id }),
+    })
+      .then(async (response) => {
+        const data = await response.json();
+        console.log(data);
+        if (!response.ok) {
+          throw new Error("Error clearing notification");
+        }
+        user.data.notification = null;
+        localStorage.setItem("flashUser", JSON.stringify(user));
+        showSection("dashboard");
+      })
+      .catch((error) => {
+        console.error("Error clearing notification:", error);
+        alert("Error processing notification.");
+      });
+  } else {
+    alert("🔕 You have no new notifications.");
+    showSection("dashboard");
+  }
+}
+
+function updateNotificationButton() {
+  const user = JSON.parse(localStorage.getItem("flashUser"));
+  const notificationBtn = document.getElementById("notification-btn");
+  if (user?.data?.notification?.message) {
+    notificationBtn.innerHTML = `🔔 Notifications <span class="badge">New</span>`;
+    notificationBtn.classList.add("has-notification");
+  } else {
+    notificationBtn.innerHTML = `🔔 Notifications`;
+    notificationBtn.classList.remove("has-notification");
+  }
 }
