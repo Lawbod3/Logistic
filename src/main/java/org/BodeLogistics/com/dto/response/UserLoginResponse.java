@@ -1,6 +1,7 @@
 package org.BodeLogistics.com.dto.response;
 
 import lombok.Data;
+import org.BodeLogistics.com.data.models.Notification;
 import org.BodeLogistics.com.data.models.RideActivity;
 import org.BodeLogistics.com.data.models.UserType;
 
@@ -15,5 +16,6 @@ public class UserLoginResponse {
     private String lastName;
     private String homeAddress;
     private UserType userType;
+    private Notification notification;
     private List<RideActivity> activities;
 }
