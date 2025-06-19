@@ -30,6 +30,7 @@ public class Map {
         response.setId(user.getId());
         response.setPhoneNumber(user.getPhoneNumber());
         response.setUserType(user.getUserType());
+        response.setNotification(user.getNotification());
         return response;
 
     }
