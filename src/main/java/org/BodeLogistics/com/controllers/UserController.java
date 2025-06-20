@@ -88,6 +88,17 @@ public class UserController {
 
     }
 
+    @PostMapping("/update")
+    public ResponseEntity<?>  updateNotification(@Valid @RequestBody UpdateNotificationRequest request) {
+        try {
+            UserLoginResponse response = logisticServices.updateUser(request);
+            return new ResponseEntity<>(new ApiResponse(true, response), HttpStatus.OK);
+        }
+        catch(UserDoesNotExistException e){
+            return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
 
 
 

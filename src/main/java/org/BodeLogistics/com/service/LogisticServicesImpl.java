@@ -143,6 +143,7 @@ public class LogisticServicesImpl implements LogisticServices{
     public DeliveryResponse dispatchRequest(DeliveryRequest deliveryRequest) {
         DispatchActivity dispatchActivity = Map.dispatchActivityToDeliveryRequest(deliveryRequest);
         DispatchRider  foundDispatcher = searchForDispatcherService();
+        foundDispatcher.setAvailable(false);
         DispatcherProfileResponse dispatchActivityResponse = Map.dispatchActivityResponseToRider(foundDispatcher);
         Map.dispatchRiderToActivity(foundDispatcher,dispatchActivity);
         dispatchActivity = dispatchActivityRepository.save(dispatchActivity);
@@ -173,6 +174,7 @@ public class LogisticServicesImpl implements LogisticServices{
                 .orElseThrow(() -> new UserDoesNotExistException("User Does Not Exist"));
         RideActivity activity = Map.rideActivityToRideRequest(rideRequest);
         Driver foundDriver = searchForDriverService();
+        foundDriver.setAvailable(false);
         DriverProfileResponse driverProfileResponse = Map.dispatchActivityResponseToDriver(foundDriver);
         Map.driverToActivity(foundDriver,activity);
         activity = activityRepository.save(activity);
@@ -198,13 +200,42 @@ public class LogisticServicesImpl implements LogisticServices{
         user.setNotification(null);
         userRepository.save(user);
         response.setSuccess(true);
+
+        if (user.getUserType() == UserType.DRIVER) {
+            driverRepository.findByUserId(user.getId()).ifPresent(driver -> {
+                driver.setNotification(null);
+                driverRepository.save(driver);
+            });
+        }
+
+        if (user.getUserType() == UserType.DISPATCHER) {
+            dispatchRiderRepository.findByUserId(user.getId()).ifPresent(rider -> {
+                rider.setNotification(null);
+                dispatchRiderRepository.save(rider);
+            });
+        }
         return  response;
 
     }
 
+    @Override
+    public UserLoginResponse updateUser(UpdateNotificationRequest request) {
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new UserDoesNotExistException("User Does Not Exist"));
+        if (user.getUserType() == UserType.DRIVER && user.getNotification() == null) {
+            driverRepository.findByUserId(user.getId()).ifPresent(driver -> {
+                user.setNotification(driver.getNotification());
+            });
+        }
 
+        if (user.getUserType() == UserType.DISPATCHER && user.getNotification() == null) {
+            dispatchRiderRepository.findByUserId(user.getId()).ifPresent(rider -> {
+                user.setNotification(rider.getNotification());
+            });
+        }
 
-
+        return Map.userToUserLoginResponse(user);
+    }
 
 
 }
