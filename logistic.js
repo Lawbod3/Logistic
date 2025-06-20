@@ -19,15 +19,38 @@ function showSection(sectionId) {
   if (sectionId === "dashboard") {
     const user = JSON.parse(localStorage.getItem("flashUser"));
     const notificationBtn = document.getElementById("notification-btn");
+    
     if (
       notificationBtn &&
       user &&
       ["DRIVER", "DISPATCHER"].includes(user.data.userType.toUpperCase())
     ) {
       notificationBtn.style.display = "block";
-      updateNotificationButton();
+      fetch("http://localhost:8080/api/logistics/user/update", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: user.data.id,
+        }),
+      })
+        .then(async (response) => {
+          const data = await response.json();
+          if (response.ok && data.data) {
+            user.data = data.data;
+            localStorage.setItem("flashUser", JSON.stringify(user));
+            updateNotificationButton();
+            checkNotification();
+            startNotificationPolling();
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching user data:", error);
+        });
     } else if (notificationBtn) {
       notificationBtn.style.display = "none";
+      stopNotificationPolling();
     }
   }
   if (sectionId !== "register") {
@@ -42,8 +65,17 @@ function showSection(sectionId) {
     const loginMessage = document.getElementById("loginMessage");
     if (loginMessage) loginMessage.textContent = "";
   }
+
+  if(sectionId !== "bookRidePage"){
+    const bookRide = document.getElementById("book-ride-form");
+    if(bookRide) bookRide.reset();
+    const rideMessage = document.getElementById("rideMessage");
+    if(rideMessage) rideMessage.textContent = "";
+
+  }
 }
 function callLogout() {
+  stopNotificationPolling();
   showSection("home");
 }
 
@@ -129,16 +161,16 @@ if (registerForm) {
       .then(async (response) => {
         const data = await response.json();
         console.log(data);
-        const reponseMessage = document.getElementById("regMessage");
+        const responseMessage = document.getElementById("regMessage");
         if (response.ok) {
-          reponseMessage.textContent = "Registration successful!";
-          reponseMessage.style.color = "green";
+          responseMessage.textContent = "Registration successful!";
+          responseMessage.style.color = "green";
 
           showSection("login");
         } else {
-          reponseMessage.textContent =
+          responseMessage.textContent =
             data.data || "Registration failed. Please try again.";
-          reponseMessage.style.color = "red";
+          responseMessage.style.color = "red";
         }
       })
       .catch((error) => {
@@ -169,7 +201,7 @@ if (loginForm) {
       .then(async (response) => {
         const data = await response.json();
         console.log(data);
-        const reponseMessage = document.getElementById("loginMessage");
+        const responseMessage = document.getElementById("loginMessage");
         if (response.ok) {
           localStorage.setItem("flashUser", JSON.stringify(data));
           showSection("dashboard");
@@ -178,11 +210,12 @@ if (loginForm) {
           ) {
             checkNotification();
             updateNotificationButton();
+            startNotificationPolling();
           }
         } else {
-          reponseMessage.textContent =
+          responseMessage.textContent =
             data.data || "Login failed. Please try again.";
-          reponseMessage.style.color = "red";
+          responseMessage.style.color = "red";
         }
       })
       .catch((error) => {
@@ -232,15 +265,15 @@ if (driverForm) {
       .then(async (response) => {
         const data = await response.json();
         console.log(data);
-        const reponseMessage = document.getElementById("driverMessage");
+        const responseMessage = document.getElementById("driverMessage");
         if (response.ok) {
-          reponseMessage.textContent = "Driver registration successful!";
-          reponseMessage.style.color = "green";
+          responseMessage.textContent = "Driver registration successful!";
+          responseMessage.style.color = "green";
           showSection("login");
         } else {
-          reponseMessage.textContent =
+          responseMessage.textContent =
             data.data || "Driver registration failed. Please try again.";
-          reponseMessage.style.color = "red";
+          responseMessage.style.color = "red";
         }
       })
       .catch((error) => {
@@ -291,15 +324,15 @@ if (riderForm) {
       .then(async (response) => {
         const data = await response.json();
         console.log(data);
-        const reponseMessage = document.getElementById("riderMessage");
+        const responseMessage = document.getElementById("riderMessage");
         if (response.ok) {
-          reponseMessage.textContent = "Dispatcher registration successful!";
-          reponseMessage.style.color = "green";
+          responseMessage.textContent = "Dispatcher registration successful!";
+          responseMessage.style.color = "green";
           showSection("login");
         } else {
-          reponseMessage.textContent =
+          responseMessage.textContent =
             data.data || "Dispatcher registration failed. Please try again.";
-          reponseMessage.style.color = "red";
+          responseMessage.style.color = "red";
         }
       })
       .catch((error) => {
@@ -339,7 +372,7 @@ if (bookRide) {
       .then(async (response) => {
         const data = await response.json();
         console.log(data);
-        const reponseMessage = document.getElementById("rideMessage");
+        const responseMessage = document.getElementById("rideMessage");
         if (response.ok) {
           alert("Driver found kindy confirm the Ride  activity");
           showSection("dashboard");
@@ -348,9 +381,9 @@ if (bookRide) {
             alert(data.data);
             showSection("dashboard");
           }
-          reponseMessage.textContent =
+          responseMessage.textContent =
             data.data || "Ride request failed. Please try again.";
-          reponseMessage.style.color = "red";
+          responseMessage.style.color = "red";
         }
       })
       .catch((error) => {
@@ -395,7 +428,7 @@ if (bookDispatcher) {
       .then(async (response) => {
         const data = await response.json();
         console.log(data);
-        const reponseMessage = document.getElementById("dispatcherMessage");
+        const responseMessage = document.getElementById("dispatcherMessage");
         if (response.ok) {
           alert("Dispatcher found kindly confirm the activity");
           showSection("dashboard");
@@ -404,9 +437,9 @@ if (bookDispatcher) {
             alert(data.data);
             showSection("dashboard");
           }
-          reponseMessage.textContent =
+          responseMessage.textContent =
             data.data || "Dispatcher request failed. Please try again.";
-          reponseMessage.style.color = "red";
+          responseMessage.style.color = "red";
         }
       })
       .catch((error) => {
@@ -442,15 +475,17 @@ if (confirmAvailabilityYes) {
         .then(async (response) => {
           const data = await response.json();
           console.log(data);
-          const reponseMessage = document.getElementById("availabilityMessage");
+          const responseMessage = document.getElementById(
+            "availabilityMessage"
+          );
           if (response.ok) {
             alert("Availability confirmed!");
             showSection("dashboard");
           } else {
-            reponseMessage.textContent =
+            responseMessage.textContent =
               data.data ||
               "Availability confirmation failed. Please try again.";
-            reponseMessage.style.color = "red";
+            responseMessage.style.color = "red";
           }
         })
         .catch((error) => {
@@ -505,13 +540,15 @@ if (confirmAvailabilityNo) {
   });
 }
 
-function checkNotification() {
+function checkNotification(event) {
   const user = JSON.parse(localStorage.getItem("flashUser"));
   if (
     !user ||
     !["DRIVER", "DISPATCHER"].includes(user.data.userType.toUpperCase())
   ) {
-    alert("Only drivers and dispatchers can check notifications.");
+    if (event && event.type === "click") {
+      alert("Only drivers and dispatchers can check notifications.");
+    }
     showSection("dashboard");
     return;
   }
@@ -521,18 +558,18 @@ function checkNotification() {
     if (user.data.userType.toUpperCase() === "DRIVER") {
       message =
         `📢 New Ride Assigned:\n` +
-        `Ride ID: ${notification.rideId}\n` +
-        `Pickup: ${notification.pickupAddress}\n` +
-        `Destination: ${notification.destinationAddress}\n` +
-        `Price: $${notification.price}\n` +
+        `Ride ID: ${notification.rideId || "N/A"}\n` +
+        `Pickup: ${notification.pickupAddress || "N/A"}\n` +
+        `Destination: ${notification.destinationAddress || "N/A"}\n` +
+        `Price: $${notification.price || "N/A"}\n` +
         `Message: ${notification.message}`;
     } else {
       message =
         `📢 Ride Booked:\n` +
-        `Ride ID: ${notification.rideId}\n` +
-        `Pickup: ${notification.pickupAddress}\n` +
-        `Destination: ${notification.destinationAddress}\n` +
-        `Price: $${notification.price}\n` +
+        `Ride ID: ${notification.rideId || "N/A"}\n` +
+        `Pickup: ${notification.pickupAddress || "N/A"}\n` +
+        `Destination: ${notification.destinationAddress || "N/A"}\n` +
+        `Price: $${notification.price || "N/A"}\n` +
         `Message: ${notification.message}`;
     }
     alert(message);
@@ -545,19 +582,20 @@ function checkNotification() {
     })
       .then(async (response) => {
         const data = await response.json();
-        console.log(data);
+        console.log("Clear notification response:", data);
         if (!response.ok) {
           throw new Error("Error clearing notification");
         }
         user.data.notification = null;
         localStorage.setItem("flashUser", JSON.stringify(user));
+        updateNotificationButton();
         showSection("dashboard");
       })
       .catch((error) => {
         console.error("Error clearing notification:", error);
         alert("Error processing notification.");
       });
-  } else {
+  } else if (event && event.type === "click") {
     alert("🔕 You have no new notifications.");
     showSection("dashboard");
   }
@@ -572,5 +610,51 @@ function updateNotificationButton() {
   } else {
     notificationBtn.innerHTML = `🔔 Notifications`;
     notificationBtn.classList.remove("has-notification");
+  }
+}
+
+let pollingInterval = null;
+
+function startNotificationPolling() {
+  if (pollingInterval) return;
+  pollingInterval = setInterval(() => {
+    const user = JSON.parse(localStorage.getItem("flashUser"));
+    if (
+      !user ||
+      !["DRIVER", "DISPATCHER"].includes(user.data.userType.toUpperCase())
+    ) {
+      stopNotificationPolling();
+      return;
+    }
+    fetch("http://localhost:8080/api/logistics/user/update", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: user.data.id,
+      }),
+    })
+      .then(async (response) => {
+        const data = await response.json();
+        console.log("Polling response:", data); // Debug log
+        if (response.ok && data.data) {
+          user.data = data.data;
+          localStorage.setItem("flashUser", JSON.stringify(user));
+          updateNotificationButton();
+          
+        } else {
+          console.warn("No valid data in polling response:", data);
+        }
+      })
+      .catch((error) => {
+        console.error("Error polling notifications:", error);
+      });
+  }, 15000);
+}
+function stopNotificationPolling() {
+  if (pollingInterval) {
+    clearInterval(pollingInterval);
+    pollingInterval = null;
   }
 }
